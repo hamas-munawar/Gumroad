@@ -1,5 +1,4 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SelectSeparator } from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -18,7 +17,9 @@ const NavbarSidebar = ({ items }: Props) => {
   return (
     <Sheet>
       <SheetTrigger>
-        <Menu size={"28"} />
+        <button aria-label="Open navigation menu">
+          <Menu size={28} />
+        </button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
@@ -35,7 +36,7 @@ const NavbarSidebar = ({ items }: Props) => {
             </Link>
           ))}
 
-          <SelectSeparator />
+          <div className="border-t border-border my-2" />
 
           <Link
             href={"/sign-in"}
