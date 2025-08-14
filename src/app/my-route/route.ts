@@ -1,7 +1,7 @@
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 
-export default async function HomePage() {
+export const GET = async () => {
   const payload = await getPayload({
     config: configPromise,
   });
@@ -10,5 +10,5 @@ export default async function HomePage() {
     collection: "categories",
   });
 
-  return <section>{JSON.stringify(data)}</section>;
-}
+  return Response.json(data);
+};
