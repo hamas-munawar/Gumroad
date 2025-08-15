@@ -17,9 +17,8 @@ const NavbarSidebar = ({ items }: Props) => {
   return (
     <Sheet>
       <SheetTrigger>
-        <button aria-label="Open navigation menu">
+
           <Menu size={28} />
-        </button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

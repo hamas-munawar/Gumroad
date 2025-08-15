@@ -10,5 +10,5 @@ export default async function HomePage() {
     collection: "categories",
   });
 
-  return <section>{JSON.stringify(data)}</section>;
+  return <section></section>;
 }
