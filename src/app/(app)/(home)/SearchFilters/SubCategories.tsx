@@ -1,18 +1,27 @@
+import type { Category } from "@/payload-types";
 import Link from "next/link";
 
 interface Props {
-  categories: any[];
+  categories: {
+    color?: string | null;
+    subcategories?:
+      | Pick<Category, "slug" | "name">[]
+      | { docs?: Pick<Category, "slug" | "name">[] };
+  };
 }
 
 const SubCategories = ({ categories }: Props) => {
   return (
     <div
-      style={{ background: categories.color }}
+      style={categories.color ? { background: categories.color } : undefined}
       className="hidden group-hover:flex flex-col border-black border overflow-hidden rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white"
     >
-      {categories.subcategories?.map((category) => (
+      {(Array.isArray(categories.subcategories)
+        ? categories.subcategories
+        : (categories.subcategories?.docs ?? [])
+      )?.map((category) => (
         <Link
-          href={""}
+          href={`/categories/${category.slug}`}
           key={category.slug}
           className="p-2 hover:bg-black hover:text-white"
         >
