@@ -13,16 +13,11 @@ const SearchCategory = ({ category }: Props) => {
   const [left, setLeft] = useState(0);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const adjust = () => {
-      const rect = el.getBoundingClientRect();
-      const overflow = Math.max(0, rect.right, 16 - window.innerWidth);
-      setLeft(-overflow);
-    };
-    adjust();
-    window.addEventListener("resize", adjust);
-    return () => window.removeEventListener("resize", adjust);
+    const rect = ref.current?.getBoundingClientRect();
+    if (rect?.right! > window.innerWidth) {
+      const newLeft = window.innerWidth - rect?.right! - 16;
+      setLeft(newLeft);
+    }
   }, []);
 
   return (
