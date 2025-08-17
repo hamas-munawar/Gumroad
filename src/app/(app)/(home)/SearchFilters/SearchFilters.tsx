@@ -1,11 +1,10 @@
 import { Category } from "@/payload-types";
-import SearchCategories from "./SearchCategories";
-import SearchInput from "./SearchInput";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
+import SearchCategories from "./SearchCategories";
+import SearchInput from "./SearchInput";
 
 const SearchFilters = async () => {
-
   const payload = await getPayload({
     config: configPromise,
   });
@@ -34,9 +33,9 @@ const SearchFilters = async () => {
   });
 
   return (
-    <div className="flex flex-col gap-2 py-4 px-2 lg:pt-4 lg:pb-0">
+    <div className="flex flex-col gap-2 py-4 px-2 lg:pt-4 lg:pb-2">
       <SearchInput />
-      <SearchCategories categories={categories as Category[]}/>
+      <SearchCategories categories={categories as Category[]} />
     </div>
   );
 };
