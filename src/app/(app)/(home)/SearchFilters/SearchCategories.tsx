@@ -79,9 +79,11 @@ const SearchCategories = ({ categories }: Props) => {
       ref={containerRef}
       aria-label="Browse categories"
     >
-      {visibleCategories.map((category) => (
-        <SearchCategory key={category.slug} category={category} />
-      ))}
+      <div className="gap-2 hidden md:flex">
+        {visibleCategories.map((category) => (
+          <SearchCategory key={category.slug} category={category} />
+        ))}
+      </div>
 
       {hiddenCount > 0 && (
         <Sheet>

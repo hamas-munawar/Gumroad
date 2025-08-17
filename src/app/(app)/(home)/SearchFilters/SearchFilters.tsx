@@ -33,9 +33,13 @@ const SearchFilters = async () => {
   });
 
   return (
-    <div className="flex flex-col gap-2 py-4 px-2 lg:pt-4 lg:pb-2">
-      <SearchInput />
-      <SearchCategories categories={categories as Category[]} />
+    <div className="flex md:flex-col items-center md:items-stretch gap-2 py-4 px-2 lg:pt-4 lg:pb-2">
+      <div className="flex-1">
+        <SearchInput />
+      </div>
+      <div>
+        <SearchCategories categories={categories as Category[]} />
+      </div>
     </div>
   );
 };
