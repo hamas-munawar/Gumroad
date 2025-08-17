@@ -75,11 +75,11 @@ const SearchCategories = ({ categories }: Props) => {
 
   return (
     <div
-      className="relative flex gap-2 w-full py-2 items-center"
+      className="relative flex gap-2 w-full py-2 justify-between"
       ref={containerRef}
       aria-label="Browse categories"
     >
-      <div className="gap-2 hidden md:flex">
+      <div className="gap-2 hidden md:flex flex-1 justify-between">
         {visibleCategories.map((category) => (
           <SearchCategory key={category.slug} category={category} />
         ))}
@@ -90,7 +90,7 @@ const SearchCategories = ({ categories }: Props) => {
           <SheetTrigger asChild>
             <Button
               variant={"elevated"}
-              className="flex items-center gap-2 border-transparent hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full"
+              className="flex items-center gap-2 border-transparent hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full "
               aria-label="View all categories"
               title="View all categories"
             >
