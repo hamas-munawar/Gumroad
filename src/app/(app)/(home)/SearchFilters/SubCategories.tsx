@@ -23,7 +23,7 @@ const SubCategories = ({ categories }: Props) => {
         <Link
           href={`/categories/${category.slug}`}
           key={category.slug}
-          className="p-2 hover:bg-black hover:text-white"
+          className="p-2 hover:bg-black hover:text-white underline"
         >
           {category.name}
         </Link>
