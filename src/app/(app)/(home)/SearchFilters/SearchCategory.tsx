@@ -29,12 +29,14 @@ const SearchCategory = ({ category }: Props) => {
         >
           {category.name}
         </Button>
-        {
+        {category.subcategories.length > 0 && (
           <div className="group-hover:border-b-black border-b-transparent border-x-transparent border-x-8 border-b-8 border-t-transparent w-4" />
-        }
+        )}
       </div>
       <div style={{ left }} className={`absolute top-[100%] w-60`} ref={ref}>
-        {<SubCategories categories={category} key={category.slug} />}
+        {category.subcategories.length > 0 && (
+          <SubCategories categories={category} key={category.slug} />
+        )}
       </div>
     </div>
   );
