@@ -12,17 +12,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Category } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ChevronRight, ListFilter } from "lucide-react";
 import Link from "next/link";
 
 const CategoriesSidebar = ({
-  categories,
   title,
 }: {
-  categories: Category[];
   title: string;
 }) => {
+
+  const trpc = useTRPC();
+  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
+
   return (
     <Sheet>
       <SheetTrigger asChild>

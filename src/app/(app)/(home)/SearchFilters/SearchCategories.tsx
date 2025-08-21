@@ -3,15 +3,16 @@ import { Category } from "@/payload-types";
 import { useEffect, useRef, useState } from "react";
 import CategoriesSidebar from "./CategoriesSidebar";
 import SearchCategory from "./SearchCategory";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-interface Props {
-  categories: Category[];
-}
-
-const SearchCategories = ({ categories }: Props) => {
+const SearchCategories = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visibleCategories, setVisibleCategories] = useState<Category[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
+
+  const trpc = useTRPC();
+  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
 
   useEffect(() => {
     const updateVisibleCategories = () => {
@@ -34,7 +35,8 @@ const SearchCategories = ({ categories }: Props) => {
         const categoryWidth = Math.max(estimatedCategoryWidth, textWidth + 32); // 32px for padding
 
         if (totalWidth + categoryWidth <= containerWidth) {
-          visible.push(category);
+          visible.push(category as Category);
+
           totalWidth += categoryWidth + gapWidth;
         } else {
           break;
@@ -71,7 +73,7 @@ const SearchCategories = ({ categories }: Props) => {
       </div>
 
       {hiddenCount > 0 && (
-        <CategoriesSidebar categories={categories} title={"View All"} />
+        <CategoriesSidebar title={"View All"} />
       )}
     </div>
   );
