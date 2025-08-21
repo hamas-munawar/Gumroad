@@ -1,36 +1,12 @@
-import { Category } from "@/payload-types";
-import configPromise from "@payload-config";
-import { getPayload } from "payload";
 import SearchCategories from "./SearchCategories";
 import SearchInput from "./SearchInput";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { Category } from "@/payload-types";
 
 const SearchFilters = async () => {
-  const payload = await getPayload({
-    config: configPromise,
-  });
+  const queryClient = getQueryClient();
+  const categories = await queryClient.fetchQuery(trpc.categories.getMany.queryOptions());
 
-  const { docs } = await payload.find({
-    collection: "categories",
-    depth: 1,
-    where: {
-      parent: {
-        exists: false,
-      },
-    },
-    sort: "name",
-    pagination: false,
-  });
-
-  let categories = docs.map((parent) => {
-    return {
-      ...parent,
-      subcategories:
-        parent.subcategories?.docs &&
-        parent.subcategories.docs.map((child) => {
-          return { ...(child as Category), subcategories: undefined };
-        }),
-    };
-  });
 
   return (
     <div className="flex md:flex-col items-center md:items-stretch gap-2 py-4 px-2 lg:pt-4 lg:pb-2">
