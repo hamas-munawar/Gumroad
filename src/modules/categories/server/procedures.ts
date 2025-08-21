@@ -1,16 +1,10 @@
 import { Category } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import configPromise from "@payload-config";
-import { getPayload } from "payload";
 
 export const categoriesRouter = createTRPCRouter({
-  getMany: baseProcedure.query(async ()=>{
+  getMany: baseProcedure.query(async ({ctx})=>{
 
-    const payload = await getPayload({
-      config: configPromise,
-    });
-
-    const { docs } = await payload.find({
+    const { docs } = await ctx.payload.find({
       collection: "categories",
       depth: 1,
       where: {
