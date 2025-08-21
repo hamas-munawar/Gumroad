@@ -10,7 +10,7 @@ A demo project for practice and portfolio showcasing a modern e-commerce platfor
 - **Email:** muhammadhamasmunawar@gmail.com
 - **Website:** [hamas-munawar.com](https://hamas-munawar.com)
 - **LinkedIn:** [Hamas Munawar](https://linkedin.com/in/hamasmunawar)
-- **GitHub:** [@hamasmunawar](https://github.com/hamasmunawar)
+- **GitHub:** [@hamas-munawar](https://github.com/hamas-munawar)
 - **Twitter:** [@hamasmunawar](https://twitter.com/hamasmunawar)
 
 ## Tech Stack
@@ -86,5 +86,5 @@ I'm always interested in new projects and collaborations. Feel free to reach out
 - **Professional Inquiries:** muhammadhamasmunawar@gmail.com
 - **Website:** [hamas-munawar.com](https://hamas-munawar.com)
 - **LinkedIn:** [Hamas Munawar](https://linkedin.com/in/hamasmunawar)
-- **GitHub:** [@hamasmunawar](https://github.com/hamasmunawar)
+- **GitHub:** [@hamas-munawar](https://github.com/hamas-munawar)
 - **Twitter:** [@hamasmunawar](https://twitter.com/hamasmunawar)
