@@ -1,17 +1,18 @@
 "use client";
-import { Category } from "@/payload-types";
+import type { CategoryForComponent } from "@/types/trpc";
 import { useEffect, useRef, useState } from "react";
 import CategoriesSidebar from "./CategoriesSidebar";
 import SearchCategory from "./SearchCategory";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-interface Props {
-  categories: Category[];
-}
-
-const SearchCategories = ({ categories }: Props) => {
+const SearchCategories = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visibleCategories, setVisibleCategories] = useState<Category[]>([]);
+  const [visibleCategories, setVisibleCategories] = useState<CategoryForComponent[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
+
+  const trpc = useTRPC();
+  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
 
   useEffect(() => {
     const updateVisibleCategories = () => {
@@ -26,7 +27,7 @@ const SearchCategories = ({ categories }: Props) => {
       const gapWidth = 8; // gap-2 = 8px
 
       let totalWidth = 0;
-      const visible: Category[] = [];
+      const visible: CategoryForComponent[] = [];
 
       for (const category of categories) {
         // Estimate width based on category name length
@@ -35,6 +36,7 @@ const SearchCategories = ({ categories }: Props) => {
 
         if (totalWidth + categoryWidth <= containerWidth) {
           visible.push(category);
+
           totalWidth += categoryWidth + gapWidth;
         } else {
           break;
@@ -71,7 +73,7 @@ const SearchCategories = ({ categories }: Props) => {
       </div>
 
       {hiddenCount > 0 && (
-        <CategoriesSidebar categories={categories} title={"View All"} />
+        <CategoriesSidebar title={"View All"} />
       )}
     </div>
   );
