@@ -31,11 +31,13 @@ const CategoriesSidebar = ({
       <SheetTrigger asChild>
         <Button
           variant={"elevated"}
-          className="flex items-center gap-2 border-transparent hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full "
+          className="flex items-center gap-2 border-transparent hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full border border-black rounded-md md:rounded-full md:border-transparent"
+
           aria-label="View all categories"
           title="View all categories"
         >
-          <span>{title}</span> <ListFilter className="size-4" />
+          <span className="hidden md:inline-block">{title}</span> <ListFilter className="size-4" />
+
         </Button>
       </SheetTrigger>
 
