@@ -2,9 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import SubCategories from "./SubCategories";
+import { Category } from "@/payload-types";
 
 interface Props {
-  category: any;
+  category: Category;
 }
 
 const SearchCategory = ({ category }: Props) => {
