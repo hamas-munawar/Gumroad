@@ -2,9 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import SubCategories from "./SubCategories";
+import type { CategoryForComponent } from "@/types/trpc";
 
 interface Props {
-  category: any;
+  category: CategoryForComponent;
 }
 
 const SearchCategory = ({ category }: Props) => {

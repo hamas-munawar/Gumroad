@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 const SearchFilters = async () => {
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(
+  await queryClient.prefetchQuery(
     trpc.categories.getMany.queryOptions(),
   );
 

@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/payload-types";
+import type { CategoryForComponent } from "@/types/trpc";
 import { useEffect, useRef, useState } from "react";
 import CategoriesSidebar from "./CategoriesSidebar";
 import SearchCategory from "./SearchCategory";
@@ -8,7 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 const SearchCategories = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visibleCategories, setVisibleCategories] = useState<Category[]>([]);
+  const [visibleCategories, setVisibleCategories] = useState<CategoryForComponent[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
 
   const trpc = useTRPC();
@@ -27,7 +27,7 @@ const SearchCategories = () => {
       const gapWidth = 8; // gap-2 = 8px
 
       let totalWidth = 0;
-      const visible: Category[] = [];
+      const visible: CategoryForComponent[] = [];
 
       for (const category of categories) {
         // Estimate width based on category name length
@@ -35,7 +35,7 @@ const SearchCategories = () => {
         const categoryWidth = Math.max(estimatedCategoryWidth, textWidth + 32); // 32px for padding
 
         if (totalWidth + categoryWidth <= containerWidth) {
-          visible.push(category as Category);
+          visible.push(category);
 
           totalWidth += categoryWidth + gapWidth;
         } else {

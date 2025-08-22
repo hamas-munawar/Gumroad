@@ -16,16 +16,14 @@ export const categoriesRouter = createTRPCRouter({
       pagination: false,
     });
 
-    let categories = docs.map((parent) => {
-      return {
+    const categories = docs.map((parent) => ({
         ...parent,
-        subcategories:
-          parent.subcategories?.docs &&
-          parent.subcategories.docs.map((child) => {
-            return { ...(child as Category), subcategories: undefined };
-          }),
-      };
-    });
+        subcategories: Array.isArray(parent.subcategories?.docs)
+          ? parent.subcategories!.docs
+              .filter((child): child is Category => typeof child === "object" && child !== null)
+              .map(({ slug, name }: Category) => ({ slug, name }))
+          : undefined,
+      }));
 
     return categories;
   })
