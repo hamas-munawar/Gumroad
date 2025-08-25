@@ -1,9 +1,11 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 import NavbarSidebar from "./NavbarSidebar";
 
 const popins = Poppins({
@@ -67,13 +69,17 @@ const Navbar = () => {
           variant={"secondary"}
           className="border-l border-r-0 border-y-0 rounded-none h-full bg-white px-8 xl:px-12 hover:bg-pink-400 transition-all text-base xl:text-lg"
         >
-          <Link href={"/sign-in"}>Log in</Link>
+          <Link prefetch href={"/sign-in"}>
+            Log in
+          </Link>
         </Button>
         <Button
           asChild
           className="border-none rounded-none h-full px-8 xl:px-12 hover:bg-pink-400 hover:text-black transition-all text-base xl:text-lg"
         >
-          <Link href={"/sign-up"}>Start Selling</Link>
+          <Link prefetch href={"/sign-up"}>
+            Start Selling
+          </Link>
         </Button>
       </div>
       <div className="lg:hidden bg-white mr-2 border-transparent grid place-content-center">

@@ -1,10 +1,10 @@
 import { cookies as getCookies, headers as getHeaders } from "next/headers";
-import { z } from "zod";
 
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 
 import { AUTH_TOKEN } from "../constants";
+import { loginSchema, registerSchema } from "../schema";
 
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
@@ -19,33 +19,22 @@ export const authRouter = createTRPCRouter({
     cookies.delete(AUTH_TOKEN);
   }),
   register: baseProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string().min(6),
-        username: z
-          .string()
-          .min(3, "Username must be at least 3 characters long")
-          .max(20, "Username must be at most 20 characters long")
-          .regex(
-            /^[a-zA-Z0-9_]+$/,
-            "Username can only contain letters, numbers, and underscores"
-          )
-          .refine(
-            (val) =>
-              !["admin", "root", "superuser"].includes(val.toLowerCase()),
-            "This username is not allowed"
-          ),
-      })
-    )
+    .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
-      await ctx.payload.create({
-        collection: "users",
-        data: {
-          ...input,
-          password: input.password,
-        },
-      });
+      try {
+        await ctx.payload.create({
+          collection: "users",
+          data: {
+            ...input,
+            password: input.password,
+          },
+        });
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Username is not available",
+        });
+      }
 
       const user = await ctx.payload.login({
         collection: "users",
@@ -74,38 +63,31 @@ export const authRouter = createTRPCRouter({
       return user;
     }),
 
-  login: baseProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const user = await ctx.payload.login({
-        collection: "users",
-        data: {
-          email: input.email,
-          password: input.password,
-        },
+  login: baseProcedure.input(loginSchema).mutation(async ({ input, ctx }) => {
+    const user = await ctx.payload.login({
+      collection: "users",
+      data: {
+        email: input.email,
+        password: input.password,
+      },
+    });
+
+    if (!user.token) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid email or password",
       });
+    }
 
-      if (!user.token) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Invalid email or password",
-        });
-      }
+    const cookies = await getCookies();
+    cookies.set({
+      name: AUTH_TOKEN,
+      value: user.token,
+      httpOnly: true,
+      path: "/",
+      // TODO: Ensure cross-domain cookie sharing
+    });
 
-      const cookies = await getCookies();
-      cookies.set({
-        name: AUTH_TOKEN,
-        value: user.token,
-        httpOnly: true,
-        path: "/",
-        // TODO: Ensure cross-domain cookie sharing
-      });
-
-      return user;
-    }),
+    return user;
+  }),
 });
