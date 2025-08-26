@@ -1,4 +1,7 @@
 "use client";
+import { ChevronRight, ListFilter } from "lucide-react";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -15,41 +18,35 @@ import {
 } from "@/components/ui/sheet";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ChevronRight, ListFilter } from "lucide-react";
-import Link from "next/link";
 
-const CategoriesSidebar = ({
-  title,
-}: {
-  title: string;
-}) => {
-
+const CategoriesSidebar = ({ title }: { title: string }) => {
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
+  const { data: categories } = useSuspenseQuery(
+    trpc.categories.getMany.queryOptions()
+  );
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           variant={"elevated"}
-          className="flex items-center gap-2 border-transparent hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full border border-black rounded-md md:rounded-full md:border-transparent"
-
+          className="flex items-center gap-2 hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] border border-black rounded-md md:rounded-full md:border-transparent"
           aria-label="View all categories"
           title="View all categories"
         >
-          <span className="hidden md:inline-block">{title}</span> <ListFilter className="size-4" />
-
+          <span className="hidden md:inline-block">{title}</span>{" "}
+          <ListFilter className="size-4" />
         </Button>
       </SheetTrigger>
 
-      <SheetContent className="flex w-[400px] flex-col gap-6 sm:w-[540px]">
+      <SheetContent className="flex flex-col gap-6 w-screen max-w-lg">
         <SheetHeader>
           <SheetTitle className="text-3xl font-bold">
             Browse Categories
           </SheetTitle>
         </SheetHeader>
 
-        <ScrollArea className="h-[90%] pr-4">
+        <ScrollArea className="h-[90%] p-2 pb-10">
           <div className="flex flex-col gap-2">
             {categories.map(
               (category) =>
@@ -59,7 +56,7 @@ const CategoriesSidebar = ({
                       backgroundColor: category.color || "#e5e7eb",
                     }}
                     key={category.slug}
-                    className="rounded-md overflow-hidden ml-2"
+                    className="rounded-md overflow-hidden"
                   >
                     <CollapsibleTrigger className="cursor-pointer group flex w-full items-center justify-between p-4 text-lg font-medium transition-colors ">
                       <span className="flex items-center gap-3">
