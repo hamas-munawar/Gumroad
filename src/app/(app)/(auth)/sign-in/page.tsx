@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { loginSchema } from "@/modules/auth/schema";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const popins = Poppins({
   subsets: ["latin"],
@@ -30,14 +30,16 @@ const popins = Poppins({
 const SignInPage = () => {
   const trpc = useTRPC();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const login = useMutation(
     trpc.auth.login.mutationOptions({
       onError: (error) => {
         toast.error(error.message || "Something went wrong");
       },
-      onSuccess: () => {
+      onSuccess: async () => {
         toast.success("Logged in successfully");
+        await queryClient.invalidateQueries(trpc.auth.session.queryFilter());
         router.push("/");
       },
     })
@@ -66,7 +68,7 @@ const SignInPage = () => {
             Gumroad
           </Link>
           <Button variant="ghost" className="underline border-transparent">
-            <Link href="/sign-in">Sign In</Link>
+            <Link href="/sign-up">Sign Up</Link>
           </Button>
         </div>
         <Form {...form}>
