@@ -40,7 +40,7 @@ const NavbarSidebar = ({ items }: Props) => {
       <SheetTrigger>
         <Menu size={28} />
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="w-screen max-w-lg">
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
         </SheetHeader>
