@@ -1,0 +1,104 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+import { useTRPC } from "@/trpc/client";
+import { CategoryForComponent } from "@/types/trpc";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import CategoriesBredgrum from "./CategoriesBredgrum";
+import SearchCategories from "./SearchCategories";
+import SearchInput from "./SearchInput";
+
+const SearchFilters = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visibleCategories, setVisibleCategories] = useState<
+    CategoryForComponent[]
+  >([]);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  const trpc = useTRPC();
+  const { data: categories } = useSuspenseQuery(
+    trpc.categories.getMany.queryOptions()
+  );
+
+  const { category } = useParams();
+  const selectedCategory = categories?.find(
+    (cat) => cat.slug === category && cat
+  );
+
+  useEffect(() => {
+    const updateVisibleCategories = () => {
+      if (!containerRef.current) return;
+
+      const container = containerRef.current;
+      const containerWidth = container.offsetWidth;
+      setContainerWidth(containerWidth);
+
+      const estimatedCategoryWidth = 120;
+      const gapWidth = 8;
+
+      let totalWidth = 130;
+      const visible: CategoryForComponent[] = [];
+
+      if (categories)
+        for (const category of categories) {
+          const textWidth = category.name.length * 8;
+          const categoryWidth = Math.max(
+            estimatedCategoryWidth,
+            textWidth + 32
+          );
+
+          if (totalWidth + categoryWidth <= containerWidth) {
+            visible.push(category);
+
+            totalWidth += categoryWidth + gapWidth;
+          } else {
+            break;
+          }
+        }
+
+      setVisibleCategories(visible);
+    };
+
+    updateVisibleCategories();
+
+    const resizeObserver = new ResizeObserver(updateVisibleCategories);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [categories]);
+
+  const hiddenCount = Math.max(
+    (categories?.length || 0) - visibleCategories.length,
+    0
+  );
+
+  return (
+    <div
+      className="flex md:flex-col items-center md:items-stretch gap-2 py-2 md:py-4 px-4 md:px-6"
+      style={{ backgroundColor: selectedCategory?.color || "inherit" }}
+    >
+      <div ref={containerRef} className="hidden md:block" />
+      <div className="flex-1">
+        <SearchInput />
+      </div>
+      <div>
+        <SearchCategories
+          visibleCategories={visibleCategories}
+          hidden={hiddenCount > 0}
+        />
+      </div>
+      <div className="hidden md:block">
+        {selectedCategory && <CategoriesBredgrum />}
+      </div>
+    </div>
+  );
+};
+
+export default SearchFilters;
