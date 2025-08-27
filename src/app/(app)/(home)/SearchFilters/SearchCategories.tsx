@@ -1,18 +1,32 @@
 "use client";
 import type { CategoryForComponent } from "@/types/trpc";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import CategoriesSidebar from "./CategoriesSidebar";
-import SearchCategory from "./SearchCategory";
+
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import CategoriesSidebar from "./CategoriesSidebar";
+import SearchCategory from "./SearchCategory";
+
 const SearchCategories = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visibleCategories, setVisibleCategories] = useState<CategoryForComponent[]>([]);
+  const [visibleCategories, setVisibleCategories] = useState<
+    CategoryForComponent[]
+  >([]);
   const [containerWidth, setContainerWidth] = useState(0);
 
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const { category: paramsCategory } = useParams();
+  useEffect(() => {
+    if (typeof paramsCategory !== "string") return;
+    setSelectedCategory(paramsCategory || "all");
+  }, [paramsCategory]);
+
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
+  const { data: categories } = useSuspenseQuery(
+    trpc.categories.getMany.queryOptions()
+  );
 
   useEffect(() => {
     const updateVisibleCategories = () => {
@@ -68,12 +82,22 @@ const SearchCategories = () => {
     >
       <div className="gap-2 hidden md:flex flex-1 justify-between">
         {visibleCategories.map((category) => (
-          <SearchCategory key={category.slug} category={category} />
+          <SearchCategory
+            key={category.slug}
+            category={category}
+            selectedCategory={selectedCategory}
+          />
         ))}
       </div>
 
       {hiddenCount > 0 && (
-        <CategoriesSidebar title={"View All"} />
+        <CategoriesSidebar
+          title={"View All"}
+          selectedCategory={
+            visibleCategories.find((cat) => cat.slug === selectedCategory) ===
+            undefined
+          }
+        />
       )}
     </div>
   );
