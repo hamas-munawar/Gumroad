@@ -1,23 +1,13 @@
 "use client";
-import { ChevronRight, ListFilter } from "lucide-react";
-import Link from "next/link";
+import { ChevronRight, ListFilter } from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
 
 const CategoriesSidebar = ({
   title,
@@ -27,9 +17,7 @@ const CategoriesSidebar = ({
   selectedCategory: boolean;
 }) => {
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(
-    trpc.categories.getMany.queryOptions()
-  );
+  const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
 
   return (
     <Sheet>
@@ -59,7 +47,7 @@ const CategoriesSidebar = ({
 
         <ScrollArea className="h-[90%] p-2 pb-10">
           <div className="flex flex-col gap-2">
-            {categories.map(
+            {categories?.map(
               (category) =>
                 category.slug !== "all" && (
                   <Collapsible

@@ -19,8 +19,8 @@ const SearchCategory = ({ category, selectedCategory }: Props) => {
 
   useEffect(() => {
     const rect = ref.current?.getBoundingClientRect();
-    if (rect?.right! > window.innerWidth) {
-      const newLeft = window.innerWidth - rect?.right! - 16;
+    if (rect && rect.right > window.innerWidth) {
+      const newLeft = window.innerWidth - rect.right - 16;
       setLeft(newLeft);
     }
   }, []);

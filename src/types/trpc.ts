@@ -46,24 +46,26 @@ export type CategoryForUI = {
 // Runtime type checking utilities
 
 export function isCategoryWithSubcategories(
-  category: any
+  category: unknown
 ): category is CategoryWithSubcategories {
+  if (!category || typeof category !== 'object') return false;
+  
+  const categoryObj = category as Record<string, unknown>;
   return (
-    typeof category === 'object' &&
-    category !== null &&
-    typeof category.id === 'string' &&
-    typeof category.name === 'string' &&
-    typeof category.slug === 'string' &&
-    (category.subcategories === undefined ||
-      Array.isArray(category.subcategories))
+    typeof categoryObj.id === 'string' &&
+    typeof categoryObj.name === 'string' &&
+    typeof categoryObj.slug === 'string' &&
+    (categoryObj.subcategories === undefined ||
+      Array.isArray(categoryObj.subcategories))
   );
 }
 
-export function isSubcategoryItem(item: any): item is SubcategoryItem {
+export function isSubcategoryItem(item: unknown): item is SubcategoryItem {
+  if (!item || typeof item !== 'object') return false;
+  
+  const itemObj = item as Record<string, unknown>;
   return (
-    typeof item === 'object' &&
-    item !== null &&
-    typeof item.slug === 'string' &&
-    typeof item.name === 'string'
+    typeof itemObj.slug === 'string' &&
+    typeof itemObj.name === 'string'
   );
 }

@@ -1,24 +1,19 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams } from 'next/navigation';
 
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
 
-import SearchCategories from "./SearchCategories";
-import SearchInput from "./SearchInput";
+import SearchCategories from './SearchCategories';
+import SearchInput from './SearchInput';
 
 const SearchFilters = () => {
-  // const queryClient = getQueryClient();
-  // await queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
-
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(
-    trpc.categories.getMany.queryOptions()
-  );
+  const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
   const { category } = useParams();
 
-  const selectedCategory = categories.find((cat) => cat.slug === category);
+  const selectedCategory = categories?.find((cat) => cat.slug === category);
 
   return (
     <div
