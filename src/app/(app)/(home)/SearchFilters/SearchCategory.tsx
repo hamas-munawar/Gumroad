@@ -33,7 +33,12 @@ const SearchCategory = ({ category, selectedCategory }: Props) => {
           variant={"elevated"}
           className={`border-transparent group-hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full ${selectedCategory === category.slug ? "border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[4px] -translate-x-[4px]" : ""}`}
         >
-          <Link href={`/${category.slug === "all" ? "/" : category.slug}`}>
+          <Link
+            href={category.slug === "all" ? "/" : `/${category.slug}`}
+            aria-current={
+              selectedCategory === category.slug ? "page" : undefined
+            }
+          >
             {category.name}
           </Link>
         </Button>

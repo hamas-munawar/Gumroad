@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 const CategoryPage = async ({
   params,
 }: {
@@ -5,7 +7,22 @@ const CategoryPage = async ({
 }) => {
   const { category } = await params;
 
-  return <div>{category}</div>;
+  // Validate category parameter
+  if (
+    !category ||
+    typeof category !== "string" ||
+    category.trim().length === 0
+  ) {
+    notFound();
+  }
+
+  // Basic sanitization - ensure it's a valid slug format
+  const sanitizedCategory = category.replace(/[^a-zA-Z0-9-_]/g, "");
+  if (sanitizedCategory !== category) {
+    notFound();
+  }
+
+  return <div>{sanitizedCategory}</div>;
 };
 
 export default CategoryPage;
