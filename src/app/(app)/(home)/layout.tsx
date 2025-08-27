@@ -1,6 +1,6 @@
-import Footer from "./Footer";
-import Navbar from "./Navbar";
-import SearchFilters from "./SearchFilters/SearchFilters";
+import Footer from "@/modules/home/ui/components/Footer";
+import Navbar from "@/modules/home/ui/components/Navbar";
+import SearchFilters from "@/modules/home/ui/components/SearchFilters/SearchFilters";
 
 export default function HomeLayout({
   children,
