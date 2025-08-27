@@ -1,18 +1,36 @@
 "use client";
 import type { CategoryForComponent } from "@/types/trpc";
-import { useEffect, useRef, useState } from "react";
-import CategoriesSidebar from "./CategoriesSidebar";
-import SearchCategory from "./SearchCategory";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
+
+import CategoriesSidebar from './CategoriesSidebar';
+import SearchCategory from './SearchCategory';
 
 const SearchCategories = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [visibleCategories, setVisibleCategories] = useState<CategoryForComponent[]>([]);
+  const [visibleCategories, setVisibleCategories] = useState<
+    CategoryForComponent[]
+  >([]);
   const [containerWidth, setContainerWidth] = useState(0);
 
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const { category: paramsCategory } = useParams();
+
+  useEffect(() => {
+    if (!paramsCategory) {
+      setSelectedCategory("all");
+      return;
+    }
+
+    if (typeof paramsCategory !== "string") return;
+    setSelectedCategory(paramsCategory);
+  }, [paramsCategory]);
+
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
+  const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
 
   useEffect(() => {
     const updateVisibleCategories = () => {
@@ -29,19 +47,23 @@ const SearchCategories = () => {
       let totalWidth = 0;
       const visible: CategoryForComponent[] = [];
 
-      for (const category of categories) {
-        // Estimate width based on category name length
-        const textWidth = category.name.length * 8; // Approximate 8px per character
-        const categoryWidth = Math.max(estimatedCategoryWidth, textWidth + 32); // 32px for padding
+      if (categories)
+        for (const category of categories) {
+          // Estimate width based on category name length
+          const textWidth = category.name.length * 8; // Approximate 8px per character
+          const categoryWidth = Math.max(
+            estimatedCategoryWidth,
+            textWidth + 32
+          ); // 32px for padding
 
-        if (totalWidth + categoryWidth <= containerWidth) {
-          visible.push(category);
+          if (totalWidth + categoryWidth <= containerWidth) {
+            visible.push(category);
 
-          totalWidth += categoryWidth + gapWidth;
-        } else {
-          break;
+            totalWidth += categoryWidth + gapWidth;
+          } else {
+            break;
+          }
         }
-      }
 
       setVisibleCategories(visible);
     };
@@ -58,7 +80,7 @@ const SearchCategories = () => {
     };
   }, [categories]);
 
-  const hiddenCount = Math.max(categories.length - visibleCategories.length, 0);
+  const hiddenCount = Math.max((categories?.length || 0) - visibleCategories.length, 0);
 
   return (
     <div
@@ -68,12 +90,22 @@ const SearchCategories = () => {
     >
       <div className="gap-2 hidden md:flex flex-1 justify-between">
         {visibleCategories.map((category) => (
-          <SearchCategory key={category.slug} category={category} />
+          <SearchCategory
+            key={category.slug}
+            category={category}
+            selectedCategory={selectedCategory}
+          />
         ))}
       </div>
 
       {hiddenCount > 0 && (
-        <CategoriesSidebar title={"View All"} />
+        <CategoriesSidebar
+          title={"View All"}
+          selectedCategory={
+            visibleCategories.find((cat) => cat.slug === selectedCategory) ===
+            undefined
+          }
+        />
       )}
     </div>
   );

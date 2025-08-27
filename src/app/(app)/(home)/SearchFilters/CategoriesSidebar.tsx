@@ -1,36 +1,35 @@
 "use client";
-import { ChevronRight, ListFilter } from "lucide-react";
-import Link from "next/link";
+import { ChevronRight, ListFilter } from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { useTRPC } from '@/trpc/client';
+import { useQuery } from '@tanstack/react-query';
 
-const CategoriesSidebar = ({ title }: { title: string }) => {
+const CategoriesSidebar = ({
+  title,
+  selectedCategory,
+}: {
+  title: string;
+  selectedCategory: boolean;
+}) => {
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(
-    trpc.categories.getMany.queryOptions()
-  );
+  const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           variant={"elevated"}
-          className="flex items-center gap-2 hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] border border-black rounded-md md:rounded-full md:border-transparent"
+          className={
+            `flex items-center gap-2 hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] border border-black rounded-md md:rounded-full md:border-transparent ` +
+            (selectedCategory
+              ? "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[4px] -translate-x-[4px] !border-black"
+              : "")
+          }
           aria-label="View all categories"
           title="View all categories"
         >
@@ -48,7 +47,7 @@ const CategoriesSidebar = ({ title }: { title: string }) => {
 
         <ScrollArea className="h-[90%] p-2 pb-10">
           <div className="flex flex-col gap-2">
-            {categories.map(
+            {categories?.map(
               (category) =>
                 category.slug !== "all" && (
                   <Collapsible
@@ -71,13 +70,13 @@ const CategoriesSidebar = ({ title }: { title: string }) => {
                 )} */}
 
                       {category.subcategories &&
-                        (category.subcategories as any).length > 0 && (
+                        category.subcategories.length > 0 && (
                           <ChevronRight className="h-5 w-5 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-90" />
                         )}
                     </CollapsibleTrigger>
 
                     {category.subcategories &&
-                      (category.subcategories as any).length > 0 && (
+                      category.subcategories.length > 0 && (
                         <CollapsibleContent>
                           <div
                             style={{
@@ -85,17 +84,15 @@ const CategoriesSidebar = ({ title }: { title: string }) => {
                             }}
                             className="flex flex-col gap-1 border-0 p-2"
                           >
-                            {(category.subcategories as any).map(
-                              (subCategory: any) => (
-                                <Link
-                                  href={`/categories/${subCategory.slug}`}
-                                  key={subCategory.slug}
-                                  className="cursor-pointer block rounded px-2 py-2 text-base font-medium text-gray-800 transition-colors hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
-                                >
-                                  {subCategory.name}
-                                </Link>
-                              )
-                            )}
+                            {category.subcategories.map((subCategory) => (
+                              <Link
+                                href={`/${category.slug}/${subCategory.slug}`}
+                                key={subCategory.slug}
+                                className="cursor-pointer block rounded px-2 py-2 text-base font-medium text-gray-800 transition-colors hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                              >
+                                {subCategory.name}
+                              </Link>
+                            ))}
                           </div>
                         </CollapsibleContent>
                       )}
