@@ -1,28 +1,23 @@
-import { notFound } from "next/navigation";
+"use client";
 
-const CategoryPage = async ({
-  params,
-}: {
-  params: Promise<{ category: string }>;
-}) => {
-  const { category } = await params;
+import { useParams } from "next/navigation";
 
-  // Validate category parameter
-  if (
-    !category ||
-    typeof category !== "string" ||
-    category.trim().length === 0
-  ) {
-    notFound();
-  }
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-  // Basic sanitization - ensure it's a valid slug format
-  const sanitizedCategory = category.replace(/[^a-zA-Z0-9-_]/g, "");
-  if (sanitizedCategory !== category) {
-    notFound();
-  }
+const CategoryPage = () => {
+  const params = useParams();
+  const trpc = useTRPC();
+  const rawCategory = Array.isArray(params.category)
+    ? params.category[0]
+    : params.category;
+  const { data: products } = useSuspenseQuery(
+    trpc.products.getMany.queryOptions({
+      categorySlug: rawCategory,
+    })
+  );
 
-  return <div>{sanitizedCategory}</div>;
+  return <div>{JSON.stringify(products, null, 2)}</div>;
 };
 
 export default CategoryPage;

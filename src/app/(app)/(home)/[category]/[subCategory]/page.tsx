@@ -1,36 +1,24 @@
-import { notFound } from "next/navigation";
+"use client";
 
-const SubCategoryPage = async ({
-  params,
-}: {
-  params: Promise<{ category: string; subCategory: string }>;
-}) => {
-  const { category, subCategory } = await params;
+import { useParams } from "next/navigation";
 
-  // Validate parameters
-  if (
-    !category ||
-    !subCategory ||
-    typeof category !== "string" ||
-    typeof subCategory !== "string" ||
-    category.trim().length === 0 ||
-    subCategory.trim().length === 0
-  ) {
-    notFound();
-  }
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-  // Basic sanitization - ensure they're valid slug formats
-  const sanitizedCategory = category.replace(/[^a-zA-Z0-9-_]/g, "");
-  const sanitizedSubCategory = subCategory.replace(/[^a-zA-Z0-9-_]/g, "");
-
-  if (sanitizedCategory !== category || sanitizedSubCategory !== subCategory) {
-    notFound();
-  }
-
+const SubCategoryPage = () => {
+  const trpc = useTRPC();
+  const params = useParams();
+  const rawSubCategory = Array.isArray(params.subCategory)
+    ? params.subCategory[0]
+    : params.subCategory;
+  const { data: products } = useSuspenseQuery(
+    trpc.products.getMany.queryOptions({
+      categorySlug: rawSubCategory,
+    })
+  );
   return (
     <>
-      <div>Category: {sanitizedCategory}</div>
-      <div>Subcategory: {sanitizedSubCategory}</div>
+      <div>{JSON.stringify(products)}</div>
     </>
   );
 };
