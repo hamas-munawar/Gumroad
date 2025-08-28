@@ -196,8 +196,8 @@ export interface Product {
    */
   price: number;
   Category?: (string | null) | Category;
-  images?: (string | null) | Media;
-  refundPolicy?: ('30-days' | '14-days' | '7-days' | '3-days' | '12-day' | 'no-refund') | null;
+  images?: (string | Media)[] | null;
+  refundPolicy?: ('30-days' | '14-days' | '7-days' | '3-days' | '1-day' | 'no-refund') | null;
   updatedAt: string;
   createdAt: string;
 }

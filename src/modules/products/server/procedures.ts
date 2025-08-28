@@ -1,6 +1,6 @@
-import z from 'zod';
+import z from "zod";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -19,21 +19,20 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
-      const categories =
-        category[0] && category[0].subcategories?.docs !== undefined
-          ? category[0].subcategories?.docs.map((subcat) => {
-              // Check if subcat is a string or a Category object
-              return typeof subcat === "string" ? subcat : subcat.slug;
-            })
-          : [];
-
-      categories?.unshift(input.category || "");
+      const categoryDoc = category[0];
+      if (!categoryDoc) return [];
+      const categoryIds: string[] = [categoryDoc.id];
+      const children = categoryDoc.subcategories?.docs ?? [];
+      for (const child of children) {
+        if (typeof child === "string") categoryIds.push(child);
+        else if (child) categoryIds.push(child.id);
+      }
 
       const { docs } = await ctx.payload.find({
         collection: "products",
         depth: 1, // Populate the category relationship && Image
         where: {
-          "Category.slug": { in: categories },
+          Category: { in: categoryIds },
         },
         select: {
           name: true,

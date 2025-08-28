@@ -1,11 +1,7 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { trpc } from "@/trpc/server";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { trpc } from '@/trpc/server';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
 interface LayoutProps {
   params: {
