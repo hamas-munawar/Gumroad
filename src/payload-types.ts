@@ -191,6 +191,10 @@ export interface Product {
   id: string;
   name: string;
   desctiption?: string | null;
+  /**
+   * Price in USD
+   */
+  price?: string | null;
   images?: (string | Media)[] | null;
   category: string | Category;
   updatedAt: string;
@@ -322,6 +326,7 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   desctiption?: T;
+  price?: T;
   images?: T;
   category?: T;
   updatedAt?: T;

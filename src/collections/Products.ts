@@ -13,6 +13,13 @@ export const Products: CollectionConfig = {
       type: "text",
     },
     {
+      name: "price",
+      type: "text",
+      admin: {
+        description: "Price in USD",
+      },
+    },
+    {
       name: "images",
       type: "upload",
       relationTo: "media",
