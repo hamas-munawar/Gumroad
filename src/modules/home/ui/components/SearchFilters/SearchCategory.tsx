@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -9,11 +10,11 @@ import SubCategories from "./SubCategories";
 import type { CategoryForComponent } from "@/types/trpc";
 interface Props {
   category: CategoryForComponent;
-  selectedCategory?: string | null;
 }
 
-const SearchCategory = ({ category, selectedCategory }: Props) => {
+const SearchCategory = ({ category }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { category: selectedCategory } = useParams();
 
   const [left, setLeft] = useState(0);
 
@@ -31,7 +32,7 @@ const SearchCategory = ({ category, selectedCategory }: Props) => {
         <Button
           asChild
           variant={"elevated"}
-          className={`border-transparent group-hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full ${selectedCategory === category.slug ? "border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[4px] -translate-x-[4px]" : ""}`}
+          className={`bg-transparent border-transparent group-hover:border-black group-hover:bg-white group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] rounded-full ${selectedCategory === category.slug && "border-black bg-white"}`}
         >
           <Link
             href={category.slug === "all" ? "/" : `/${category.slug}`}

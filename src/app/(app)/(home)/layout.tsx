@@ -1,6 +1,6 @@
 import Footer from "@/modules/home/ui/components/Footer";
 import Navbar from "@/modules/home/ui/components/Navbar";
-import SearchFilters from "@/modules/home/ui/components/SearchFilters/SearchFilters";
+import SearchFiltersWrapper from "@/modules/home/ui/components/SearchFilters/SearchFiltersWrapper";
 
 export default function HomeLayout({
   children,
@@ -10,7 +10,7 @@ export default function HomeLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <SearchFilters />
+      <SearchFiltersWrapper />
       <div className="flex-1 bg-[#f4f4f0] ">{children}</div>
       <Footer />
     </div>

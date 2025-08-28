@@ -1,13 +1,23 @@
 "use client";
-import { ChevronRight, ListFilter } from 'lucide-react';
-import Link from 'next/link';
+import { ChevronRight, ListFilter } from "lucide-react";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { useTRPC } from '@/trpc/client';
-import { useQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const CategoriesSidebar = ({
   title,
@@ -17,7 +27,9 @@ const CategoriesSidebar = ({
   selectedCategory: boolean;
 }) => {
   const trpc = useTRPC();
-  const { data: categories } = useQuery(trpc.categories.getMany.queryOptions());
+  const { data: categories } = useSuspenseQuery(
+    trpc.categories.getMany.queryOptions()
+  );
 
   return (
     <Sheet>
@@ -25,10 +37,8 @@ const CategoriesSidebar = ({
         <Button
           variant={"elevated"}
           className={
-            `flex items-center gap-2 hover:border-black group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] border border-black rounded-md md:rounded-full md:border-transparent ` +
-            (selectedCategory
-              ? "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[4px] -translate-x-[4px] !border-black"
-              : "")
+            `flex items-center gap-2 bg-transparent hover:border-black hover:bg-white group-hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-[4px] group-hover:-translate-x-[4px] border border-black rounded-md md:rounded-full md:border-transparent ` +
+            (selectedCategory && "bg-white !border-black")
           }
           aria-label="View all categories"
           title="View all categories"
@@ -61,13 +71,6 @@ const CategoriesSidebar = ({
                       <span className="flex items-center gap-3">
                         {category.name}
                       </span>
-
-                      {/* {category.subcategories &&
-                (category.subcategories as any).length > 0 && (
-                  <span className="ml-auto mr-3 inline-flex items-center justify-center rounded-full bg-neutral-200 text-neutral-700 text-xs h-5 min-w-5 px-2">
-                    {(category.subcategories as any).length}
-                  </span>
-                )} */}
 
                       {category.subcategories &&
                         category.subcategories.length > 0 && (
