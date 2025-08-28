@@ -8,9 +8,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 const CategoryPage = () => {
   const params = useParams();
   const trpc = useTRPC();
+  const rawCategory = Array.isArray(params.category)
+    ? params.category[0]
+    : params.category;
   const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
-      categorySlug: params.category as string,
+      categorySlug: rawCategory,
     })
   );
 

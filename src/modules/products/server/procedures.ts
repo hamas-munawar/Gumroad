@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
@@ -24,24 +24,21 @@ export const productsRouter = createTRPCRouter({
       }
 
       const mainCategory = parentCategory.docs[0];
-      const categorySlugs = [mainCategory.slug];
-
-      mainCategory.subcategories?.docs?.forEach(
-        (cat) =>
-          typeof cat !== "string" && cat.slug && categorySlugs.push(cat.slug)
-      );
+      const categoryIds: string[] = [mainCategory.id];
+      mainCategory.subcategories?.docs?.forEach((cat) => {
+        if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
+      });
 
       const { docs } = await ctx.payload.find({
         collection: "products",
-        depth: 1,
+        depth: 0,
+        pagination: false,
         where: {
-          "category.slug": {
-            in: categorySlugs,
-          },
+          category: { in: categoryIds },
         },
         select: {
           name: true,
-          desctiption: true,
+          description: true,
           price: true,
         },
       });

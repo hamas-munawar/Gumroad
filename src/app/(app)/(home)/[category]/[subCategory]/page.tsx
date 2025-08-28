@@ -3,14 +3,17 @@
 import { useParams } from "next/navigation";
 
 import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const SubCategoryPage = () => {
   const trpc = useTRPC();
   const params = useParams();
-  const { data: products } = useQuery(
+  const rawSubCategory = Array.isArray(params.subCategory)
+    ? params.subCategory[0]
+    : params.subCategory;
+  const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
-      categorySlug: params.subCategory as string,
+      categorySlug: rawSubCategory,
     })
   );
   return (

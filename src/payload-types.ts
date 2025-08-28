@@ -190,11 +190,11 @@ export interface Category {
 export interface Product {
   id: string;
   name: string;
-  desctiption?: string | null;
+  description?: string | null;
   /**
    * Price in USD
    */
-  price?: string | null;
+  price: number;
   images?: (string | Media)[] | null;
   category: string | Category;
   updatedAt: string;
@@ -325,7 +325,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   name?: T;
-  desctiption?: T;
+  description?: T;
   price?: T;
   images?: T;
   category?: T;

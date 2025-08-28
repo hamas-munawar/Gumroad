@@ -9,12 +9,14 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
-      name: "desctiption",
+      name: "description",
       type: "text",
     },
     {
       name: "price",
-      type: "text",
+      type: "number",
+      required: true,
+      min: 0,
       admin: {
         description: "Price in USD",
       },
