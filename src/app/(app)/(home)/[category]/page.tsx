@@ -1,20 +1,20 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 
-import { useTRPC } from '@/trpc/client';
-import { useQuery } from '@tanstack/react-query';
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const CategoryPage = () => {
-  const trpc = useTRPC();
   const params = useParams();
-  const { data } = useQuery(
+  const trpc = useTRPC();
+  const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
       categorySlug: params.category as string,
     })
   );
 
-  return <div>{JSON.stringify(data, null, 2)}</div>;
+  return <div>{JSON.stringify(products, null, 2)}</div>;
 };
 
 export default CategoryPage;

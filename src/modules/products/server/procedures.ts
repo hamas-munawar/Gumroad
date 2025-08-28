@@ -1,11 +1,13 @@
-import z from 'zod';
+import z from "zod";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(z.object({ categorySlug: z.string().optional() }))
     .query(async ({ ctx, input }) => {
+      if (!input.categorySlug) return [];
+
       const parentCategory = await ctx.payload.find({
         collection: "categories",
         pagination: false,
@@ -15,7 +17,12 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
-      if (!parentCategory.docs || parentCategory.docs.length === 0) return;
+      // The key change is here: instead of returning undefined, we return an empty array.
+      // This satisfies tRPC's expectation for a query that returns a list.
+      if (!parentCategory.docs || parentCategory.docs.length === 0) {
+        return [];
+      }
+
       const mainCategory = parentCategory.docs[0];
       const categorySlugs = [mainCategory.slug];
 
@@ -23,8 +30,6 @@ export const productsRouter = createTRPCRouter({
         (cat) =>
           typeof cat !== "string" && cat.slug && categorySlugs.push(cat.slug)
       );
-
-      console.log(categorySlugs);
 
       const { docs } = await ctx.payload.find({
         collection: "products",
