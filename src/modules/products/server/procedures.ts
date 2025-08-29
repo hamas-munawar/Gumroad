@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { baseProcedure, createTRPCRouter } from '@/trpc/init';
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -23,26 +23,28 @@ export const productsRouter = createTRPCRouter({
         return [];
       }
 
-      const mainCategory = parentCategory.docs[0];
-      const categoryIds: string[] = [mainCategory.id];
-      mainCategory.subcategories?.docs?.forEach((cat) => {
-        if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
-      });
+      if (parentCategory.docs[0]) {
+        const mainCategory = parentCategory.docs[0];
+        const categoryIds: string[] = [mainCategory.id];
+        mainCategory.subcategories?.docs?.forEach((cat) => {
+          if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
+        });
 
-      const { docs } = await ctx.payload.find({
-        collection: "products",
-        depth: 0,
-        pagination: false,
-        where: {
-          category: { in: categoryIds },
-        },
-        select: {
-          name: true,
-          description: true,
-          price: true,
-        },
-      });
+        const { docs } = await ctx.payload.find({
+          collection: "products",
+          depth: 0,
+          pagination: false,
+          where: {
+            category: { in: categoryIds },
+          },
+          select: {
+            name: true,
+            description: true,
+            price: true,
+          },
+        });
 
-      return docs;
+        return docs;
+      }
     }),
 });
