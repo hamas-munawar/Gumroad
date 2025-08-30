@@ -1,10 +1,17 @@
+import { Where } from 'payload';
 import { z } from 'zod';
 
 import { baseProcedure, createTRPCRouter } from '@/trpc/init';
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
-    .input(z.object({ categorySlug: z.string().optional() }))
+    .input(
+      z.object({
+        categorySlug: z.string().optional(),
+        minPrice: z.coerce.number().min(0).optional(),
+        maxPrice: z.coerce.number().min(0).optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       if (!input.categorySlug) return [];
 
@@ -17,8 +24,6 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
-      // The key change is here: instead of returning undefined, we return an empty array.
-      // This satisfies tRPC's expectation for a query that returns a list.
       if (!parentCategory.docs || parentCategory.docs.length === 0) {
         return [];
       }
@@ -30,13 +35,23 @@ export const productsRouter = createTRPCRouter({
           if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
         });
 
+        const where: Where = { category: { in: categoryIds } };
+        if (input.minPrice != null || input.maxPrice != null) {
+          where.price = {
+            ...(input.minPrice != null
+              ? { greater_than_equal: input.minPrice }
+              : {}),
+            ...(input.maxPrice != null
+              ? { less_than_equal: input.maxPrice }
+              : {}),
+          };
+        }
+
         const { docs } = await ctx.payload.find({
           collection: "products",
           depth: 0,
           pagination: false,
-          where: {
-            category: { in: categoryIds },
-          },
+          where: where,
           select: {
             name: true,
             description: true,
