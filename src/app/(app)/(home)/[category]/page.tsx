@@ -6,6 +6,8 @@ import { usePriceFilter } from '@/modules/hooks/usePriceFilter';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
+import ProductCard from './ProductCard';
+
 const CategoryPage = () => {
   const params = useParams();
 
@@ -23,7 +25,13 @@ const CategoryPage = () => {
     })
   );
 
-  return <div>{JSON.stringify(products, null, 2)}</div>;
+  return (
+    <div className="flex gap-4">
+      {products?.map((product) => (
+        <ProductCard product={product} key={product.id} />
+      ))}
+    </div>
+  );
 };
 
 export default CategoryPage;
