@@ -21,7 +21,7 @@ const PriceFilter = () => {
       </CollapsibleTrigger>
       <CollapsibleContent className="px-6 pb-4 flex flex-col gap-2 mb-2">
         <div className="flex flex-col gap-1 border-0">
-          <Label className="text-base font-medium">Min Price</Label>
+          <Label className="text-base font-medium">Minimum Price</Label>
           <Input
             type="number"
             placeholder="$0"
@@ -32,7 +32,7 @@ const PriceFilter = () => {
           />
         </div>
         <div className="flex flex-col gap-1 border-0">
-          <Label className="text-base font-medium">Max Price</Label>
+          <Label className="text-base font-medium">Maximum Price</Label>
           <Input
             type="number"
             placeholder="$∞"
