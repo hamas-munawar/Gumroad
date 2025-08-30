@@ -25,7 +25,7 @@ const PriceFilter = () => {
           <Input
             type="number"
             placeholder="$0"
-            value={parseInt(priceFilter.minPrice!)}
+            value={String(parseInt(priceFilter.minPrice!) || "")}
             onChange={(e) =>
               handlePriceChange("minPrice", e.currentTarget.value)
             }
@@ -36,7 +36,7 @@ const PriceFilter = () => {
           <Input
             type="number"
             placeholder="$∞"
-            value={parseInt(priceFilter.maxPrice!)}
+            value={String(parseInt(priceFilter.maxPrice!) || "")}
             onChange={(e) =>
               handlePriceChange("maxPrice", e.currentTarget.value)
             }
