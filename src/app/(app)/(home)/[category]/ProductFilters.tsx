@@ -2,6 +2,7 @@
 import { usePriceFilter } from '@/modules/hooks/usePriceFilter';
 
 import PriceFilter from './PriceFilter';
+import TagsFilter from './TagsFilter';
 
 const ProductFilters = () => {
   const [priceFilter, setPriceFilter] = usePriceFilter();
@@ -23,8 +24,11 @@ const ProductFilters = () => {
           </button>
         )}
       </div>
-      <div>
+      <div className="border-b">
         <PriceFilter />
+      </div>
+      <div>
+        <TagsFilter />
       </div>
     </div>
   );
