@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import './globals.css';
 
-import { DM_Sans } from "next/font/google";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { DM_Sans } from 'next/font/google';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
-import { TRPCReactProvider } from "@/trpc/client";
+import { TRPCReactProvider } from '@/trpc/client';
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -23,9 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.className} antialiased`}>
-        <TRPCReactProvider>
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </TRPCReactProvider>
+        <NuqsAdapter>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

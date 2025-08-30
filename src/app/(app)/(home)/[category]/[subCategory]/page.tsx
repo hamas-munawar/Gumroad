@@ -18,8 +18,8 @@ const SubCategoryPage = () => {
   const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
       categorySlug: rawSubCategory,
-      minPrice: priceFilter.minPrice?.toString(),
-      maxPrice: priceFilter.maxPrice?.toString(),
+      minPrice: priceFilter.minPrice?.trim() || undefined,
+      maxPrice: priceFilter.maxPrice?.trim() || undefined,
     })
   );
   return (

@@ -6,12 +6,9 @@ import PriceFilter from './PriceFilter';
 const ProductFilters = () => {
   const [priceFilter, setPriceFilter] = usePriceFilter();
 
-  const hasAnyFilters = Object.entries(priceFilter).some(([, value]) => {
-    if (typeof value === "string") {
-      return value !== "";
-    }
-    return value !== null;
-  });
+  const hasAnyFilters =
+    Boolean(priceFilter.minPrice?.trim()) ||
+    Boolean(priceFilter.maxPrice?.trim());
 
   return (
     <div>
@@ -20,7 +17,7 @@ const ProductFilters = () => {
         {hasAnyFilters && (
           <button
             className="underline text-lg cursor-pointer"
-            onClick={() => setPriceFilter(null)}
+            onClick={() => setPriceFilter({ minPrice: null, maxPrice: null })}
           >
             Clear
           </button>
