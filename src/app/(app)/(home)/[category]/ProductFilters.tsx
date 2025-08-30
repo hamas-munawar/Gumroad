@@ -11,7 +11,7 @@ const ProductFilters = () => {
     Boolean(priceFilter.maxPrice?.trim());
 
   return (
-    <div>
+    <div className="bg-white rounded-md">
       <div className="flex justify-between border-b p-4 cursor-default">
         <h4 className="text-xl font-medium">Filters</h4>
         {hasAnyFilters && (
