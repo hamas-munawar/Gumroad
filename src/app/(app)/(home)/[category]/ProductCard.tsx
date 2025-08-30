@@ -11,21 +11,19 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   return (
-    <div className="w-md">
-      <Card>
-        <CardHeader>
-          <CardTitle>{product.name}</CardTitle>
-          {/* <CardDescription>Card Description</CardDescription> */}
-          {/* <CardAction>Card Action</CardAction> */}
-        </CardHeader>
-        <CardContent>
-          <p>${product.price}</p>
-        </CardContent>
-        {/* <CardFooter>
+    <Card className="w-md rounded-md">
+      <CardHeader>
+        <CardTitle>{product.name}</CardTitle>
+        {/* <CardDescription>Card Description</CardDescription> */}
+        {/* <CardAction>Card Action</CardAction> */}
+      </CardHeader>
+      <CardContent>
+        <p>${product.price}</p>
+      </CardContent>
+      {/* <CardFooter>
               <p>Card Footer</p>
             </CardFooter> */}
-      </Card>
-    </div>
+    </Card>
   );
 };
 
