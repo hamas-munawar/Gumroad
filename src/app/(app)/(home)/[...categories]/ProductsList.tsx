@@ -6,21 +6,28 @@ import { useProductFilters } from "@/modules/hooks/useProductFilters";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import ProductCard from "../ProductCard";
+import ProductCard from "./ProductCard";
 
-const SubCategoryPage = () => {
+const ProductsList = () => {
   const [productFilters] = useProductFilters();
-  const trpc = useTRPC();
+
   const params = useParams();
-  const rawSubCategory = Array.isArray(params.subCategory)
-    ? params.subCategory[0]
-    : params.subCategory;
+  let categorySlug: string | undefined;
+  if (params.categories)
+    if (params.categories.length > 1) {
+      categorySlug = params.categories[1];
+    } else {
+      categorySlug = params.categories[0];
+    }
+
+  const trpc = useTRPC();
   const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
-      categorySlug: rawSubCategory,
+      categorySlug,
       ...productFilters,
     })
   );
+
   return (
     <div className="flex gap-4">
       {products?.map((product) => (
@@ -30,4 +37,4 @@ const SubCategoryPage = () => {
   );
 };
 
-export default SubCategoryPage;
+export default ProductsList;
