@@ -1,12 +1,16 @@
 "use client";
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight } from "lucide-react";
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Label } from '@/components/ui/label';
-import { useProductFilters } from '@/modules/hooks/useProductFilters';
-import { useTRPC } from '@/trpc/client';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Label } from "@/components/ui/label";
+import { useProductFilters } from "@/modules/hooks/useProductFilters";
+import { useTRPC } from "@/trpc/client";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const TagsFilter = () => {
   const trpc = useTRPC();
@@ -55,6 +59,7 @@ const TagsFilter = () => {
               <Checkbox
                 id={tag.name}
                 onCheckedChange={() => handleTagCheck("tags", tag.name)}
+                checked={productFilters.tags?.includes(tag.name) || false}
               />
             </div>
           ))

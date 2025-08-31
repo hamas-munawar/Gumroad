@@ -8,9 +8,11 @@ const ProductFilters = () => {
   const [productFilters, setProductFilters] = useProductFilters();
 
   const hasAnyFilters =
-    Boolean(productFilters.minPrice?.trim()) ||
-    Boolean(productFilters.maxPrice?.trim()) ||
-    Boolean(productFilters.tags !== null);
+    Boolean(productFilters.minPrice !== "") ||
+    Boolean(productFilters.maxPrice !== "") ||
+    Boolean(productFilters.tags.length > 0) ||
+    Boolean(productFilters.sort !== "curated");
+
   return (
     <div className="bg-white rounded-md">
       <div className="flex justify-between border-b p-4 cursor-default">
