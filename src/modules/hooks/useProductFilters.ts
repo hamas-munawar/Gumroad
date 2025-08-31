@@ -1,4 +1,11 @@
-import { parseAsArrayOf, parseAsString, useQueryStates } from 'nuqs';
+import {
+  parseAsArrayOf,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryStates,
+} from "nuqs";
+
+export const sortTypes = ["curated", "trending", "hot_and_new"] as const;
 
 export const useProductFilters = () => {
   return useQueryStates(
@@ -6,6 +13,7 @@ export const useProductFilters = () => {
       minPrice: parseAsString,
       maxPrice: parseAsString,
       tags: parseAsArrayOf(parseAsString),
+      sort: parseAsStringLiteral(sortTypes),
     },
     {
       clearOnDefault: true,
