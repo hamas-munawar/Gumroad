@@ -1,15 +1,15 @@
-import { Where } from 'payload';
-import { z } from 'zod';
+import { Where } from "payload";
+import { z } from "zod";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(
       z.object({
         categorySlug: z.string().optional(),
-        minPrice: z.coerce.number().min(0).optional(),
-        maxPrice: z.coerce.number().min(0).optional(),
+        minPrice: z.coerce.number().nullable().optional(),
+        maxPrice: z.coerce.number().nullable().optional(),
         tags: z.array(z.string()).nullable().optional(),
       })
     )

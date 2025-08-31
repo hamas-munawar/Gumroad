@@ -1,22 +1,29 @@
-import { Suspense } from 'react';
+import { Suspense } from "react";
 
-import { getQueryClient, trpc } from '@/trpc/server';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { loadSearchParams } from "@/modules/products/searchParams";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import ProductFilters from './ProductFilters';
+import ProductFilters from "./ProductFilters";
+
+import type { SearchParams } from "nuqs/server";
 
 export default async function CategoryLayout({
   children,
   params,
+  searchParams,
 }: Readonly<{
   children: React.ReactNode;
   params: Promise<{ category: string }>;
+  searchParams: Promise<SearchParams>;
 }>) {
   const { category } = await params;
 
+  const filters = await loadSearchParams(searchParams);
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(
-    trpc.products.getMany.queryOptions({ categorySlug: category })
+    trpc.products.getMany.queryOptions({ categorySlug: category, ...filters })
   );
 
   return (
