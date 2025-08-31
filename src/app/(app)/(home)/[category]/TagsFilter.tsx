@@ -53,13 +53,13 @@ const TagsFilter = () => {
         {data?.pages.map((page) =>
           page.docs.map((tag) => (
             <div className="flex items-center justify-between" key={tag.id}>
-              <Label htmlFor={tag.name} className="text-base">
+              <Label htmlFor={tag.id} className="text-base">
                 {tag.name}
               </Label>
               <Checkbox
-                id={tag.name}
-                onCheckedChange={() => handleTagCheck("tags", tag.name)}
-                checked={productFilters.tags?.includes(tag.name) || false}
+                id={tag.id}
+                onCheckedChange={() => handleTagCheck("tags", tag.id)}
+                checked={productFilters.tags?.includes(tag.id) || false}
               />
             </div>
           ))

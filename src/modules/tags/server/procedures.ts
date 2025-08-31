@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const tagsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(
       z.object({
-        cursor: z.number().default(1),
-        limit: z.number().default(2),
+        cursor: z.number().int().min(1).default(1),
+        limit: z.number().int().min(1).max(50).default(2),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -15,6 +15,12 @@ export const tagsRouter = createTRPCRouter({
         collection: "tags",
         page: input.cursor,
         limit: input.limit,
+        sort: "name",
+        depth: 0,
+        select: {
+          id: true,
+          name: true,
+        },
       });
 
       return docs;

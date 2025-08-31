@@ -10,12 +10,7 @@ export const Tags: CollectionConfig = {
       name: "name",
       type: "text",
       required: true,
-    },
-    {
-      name: "products",
-      type: "relationship",
-      relationTo: "products",
-      hasMany: true,
+      unique: true,
     },
   ],
 };

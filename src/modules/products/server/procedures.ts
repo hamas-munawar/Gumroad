@@ -40,19 +40,19 @@ export const productsRouter = createTRPCRouter({
         });
 
         const where: Where = { category: { in: categoryIds } };
-        if (input.minPrice != "" || input.maxPrice != "") {
-          where.price = {
-            ...(input.minPrice != ""
-              ? { greater_than_equal: input.minPrice }
-              : {}),
-            ...(input.maxPrice != ""
-              ? { less_than_equal: input.maxPrice }
-              : {}),
-          };
+        const hasMin =
+          typeof input.minPrice === "string" && input.minPrice.trim() !== "";
+        const hasMax =
+          typeof input.maxPrice === "string" && input.maxPrice.trim() !== "";
+        if (hasMin || hasMax) {
+          const price: Record<string, number> = {};
+          if (hasMin) price.greater_than_equal = Number(input.minPrice);
+          if (hasMax) price.less_than_equal = Number(input.maxPrice);
+          where.price = price;
         }
 
         if (input.tags && input.tags.length > 0) {
-          where["tags.name"] = {
+          where["tags.id"] = {
             in: input.tags,
           };
         }

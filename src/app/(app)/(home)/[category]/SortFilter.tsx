@@ -1,8 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useProductFilters } from "@/modules/hooks/useProductFilters";
+import {
+  sortTypes as allowedSortTypes,
+  useProductFilters,
+} from "@/modules/hooks/useProductFilters";
 
-const sortTypes = [
+const sortOptions: {
+  label: string;
+  slug: (typeof allowedSortTypes)[number];
+}[] = [
   { label: "Curated", slug: "curated" },
   { label: "Trending", slug: "trending" },
   { label: "Hot & New", slug: "hot_and_new" },
@@ -12,18 +18,18 @@ const SortFilter = () => {
   const [productFilters, setProductFilters] = useProductFilters();
 
   const handleSortSelection = (
-    key: keyof typeof productFilters,
-    value: string
+    key: "sort",
+    value: (typeof allowedSortTypes)[number]
   ) => {
-    setProductFilters({ ...productFilters, [key]: value });
+    setProductFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
     <div className="flex gap-2">
-      {sortTypes.map((sort) => (
+      {sortOptions.map((sort) => (
         <Button
           key={sort.slug}
-          className={`bg-transparent text-black rounded-full border-transparent hover:border-black hover:bg-white ${productFilters.sort === sort.slug && "border-black bg-white"}`}
+          className={`bg-transparent text-black rounded-full border-transparent hover:border-black hover:bg-white ${productFilters.sort === sort.slug ? "border-black bg-white" : ""}`}
           onClick={() => handleSortSelection("sort", sort.slug)}
         >
           {sort.label}
