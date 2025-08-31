@@ -19,11 +19,14 @@ export default async function CategoryLayout({
 }>) {
   const { category } = await params;
 
-  const filters = await loadSearchParams(searchParams);
+  const productFilters = await loadSearchParams(searchParams);
 
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(
-    trpc.products.getMany.queryOptions({ categorySlug: category, ...filters })
+    trpc.products.getMany.queryOptions({
+      categorySlug: category,
+      ...productFilters,
+    })
   );
 
   return (
