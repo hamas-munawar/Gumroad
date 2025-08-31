@@ -60,7 +60,7 @@ export const productsRouter = createTRPCRouter({
         }
 
         if (input.tags && input.tags.length > 0) {
-          where["tags.id"] = {
+          where["tags.slug"] = {
             in: input.tags,
           };
         }

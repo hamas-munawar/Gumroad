@@ -20,6 +20,7 @@ export const tagsRouter = createTRPCRouter({
         select: {
           id: true,
           name: true,
+          slug: true,
         },
       });
 

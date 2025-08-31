@@ -12,5 +12,11 @@ export const Tags: CollectionConfig = {
       required: true,
       unique: true,
     },
+    {
+      name: "slug",
+      type: "text",
+      required: true,
+      unique: true,
+    },
   ],
 };

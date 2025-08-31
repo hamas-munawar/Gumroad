@@ -52,14 +52,14 @@ const TagsFilter = () => {
       <CollapsibleContent className="px-4 pb-4 flex flex-col gap-2 mb-2">
         {data?.pages.map((page) =>
           page.docs.map((tag) => (
-            <div className="flex items-center justify-between" key={tag.id}>
-              <Label htmlFor={tag.id} className="text-base">
+            <div className="flex items-center justify-between" key={tag.slug}>
+              <Label htmlFor={tag.slug} className="text-base">
                 {tag.name}
               </Label>
               <Checkbox
-                id={tag.id}
-                onCheckedChange={() => handleTagCheck("tags", tag.id)}
-                checked={productFilters.tags?.includes(tag.id) || false}
+                id={tag.slug}
+                onCheckedChange={() => handleTagCheck("tags", tag.slug)}
+                checked={productFilters.tags?.includes(tag.slug) || false}
               />
             </div>
           ))
