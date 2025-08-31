@@ -40,15 +40,23 @@ export const productsRouter = createTRPCRouter({
         });
 
         const where: Where = { category: { in: categoryIds } };
-        const hasMin =
-          typeof input.minPrice === "string" && input.minPrice.trim() !== "";
-        const hasMax =
-          typeof input.maxPrice === "string" && input.maxPrice.trim() !== "";
+
+        const minRaw =
+          typeof input.minPrice === "string" ? input.minPrice.trim() : "";
+        const maxRaw =
+          typeof input.maxPrice === "string" ? input.maxPrice.trim() : "";
+        const min = minRaw !== "" ? Number(minRaw) : undefined;
+        const max = maxRaw !== "" ? Number(maxRaw) : undefined;
+        const hasMin = typeof min === "number" && !Number.isNaN(min);
+        const hasMax = typeof max === "number" && !Number.isNaN(max);
         if (hasMin || hasMax) {
+          let from = hasMin ? min : undefined;
+          let to = hasMax ? max : undefined;
+          if (from != null && to != null && from > to) [from, to] = [to, from];
           const price: Record<string, number> = {};
-          if (hasMin) price.greater_than_equal = Number(input.minPrice);
-          if (hasMax) price.less_than_equal = Number(input.maxPrice);
-          where.price = price;
+          if (from != null) price.greater_than_equal = from;
+          if (to != null) price.less_than_equal = to;
+          if (Object.keys(price).length) where.price = price;
         }
 
         if (input.tags && input.tags.length > 0) {
