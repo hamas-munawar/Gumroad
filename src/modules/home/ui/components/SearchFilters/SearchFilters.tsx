@@ -19,13 +19,13 @@ const SearchFilters = () => {
   const [containerWidth, setContainerWidth] = useState(0);
 
   const trpc = useTRPC();
-  const { data: categories } = useSuspenseQuery(
+  const { data: data } = useSuspenseQuery(
     trpc.categories.getMany.queryOptions()
   );
 
-  const { category } = useParams();
-  const selectedCategory = categories?.find(
-    (cat) => cat.slug === category && cat
+  const { categories } = useParams();
+  const selectedCategory = data?.find(
+    (cat) => categories && cat.slug === categories[0] && cat
   );
 
   useEffect(() => {
@@ -42,8 +42,8 @@ const SearchFilters = () => {
       let totalWidth = 130;
       const visible: CategoryForComponent[] = [];
 
-      if (categories)
-        for (const category of categories) {
+      if (data)
+        for (const category of data) {
           const textWidth = category.name.length * 8;
           const categoryWidth = Math.max(
             estimatedCategoryWidth,
@@ -72,10 +72,10 @@ const SearchFilters = () => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [categories]);
+  }, [data]);
 
   const hiddenCount = Math.max(
-    (categories?.length || 0) - visibleCategories.length,
+    (data?.length || 0) - visibleCategories.length,
     0
   );
 

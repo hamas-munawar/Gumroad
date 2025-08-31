@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const CategoriesBredgrum = () => {
-  const { category, subCategory } = useParams();
+  const { categories } = useParams();
+  const [category, subCategory] = categories || [];
 
   return (
     <Breadcrumb>
