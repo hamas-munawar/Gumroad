@@ -4,6 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Label } from '@/components/ui/label';
+import { useProductFilters } from '@/modules/hooks/useProductFilters';
 import { useTRPC } from '@/trpc/client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 
@@ -23,6 +24,21 @@ const TagsFilter = () => {
       )
     );
 
+  const [productFilters, setProductFilters] = useProductFilters();
+  const handleTagCheck = (key: keyof typeof productFilters, tag: string) => {
+    if (productFilters.tags?.includes(tag))
+      setProductFilters({
+        ...productFilters,
+        [key]: productFilters.tags.filter((t) => t !== tag) || [],
+      });
+    else {
+      setProductFilters({
+        ...productFilters,
+        [key]: [...(productFilters.tags || []), tag],
+      });
+    }
+  };
+
   return (
     <Collapsible className="rounded-md overflow-hidden w-full">
       <CollapsibleTrigger className="w-full cursor-pointer group flex items-center justify-between text-lg font-medium p-4">
@@ -33,10 +49,13 @@ const TagsFilter = () => {
         {data?.pages.map((page) =>
           page.docs.map((tag) => (
             <div className="flex items-center justify-between" key={tag.id}>
-              <Label htmlFor="checkbox" className="text-base">
+              <Label htmlFor={tag.name} className="text-base">
                 {tag.name}
               </Label>
-              <Checkbox id="checkbox" />
+              <Checkbox
+                id={tag.name}
+                onCheckedChange={() => handleTagCheck("tags", tag.name)}
+              />
             </div>
           ))
         )}

@@ -9,8 +9,8 @@ const ProductFilters = () => {
 
   const hasAnyFilters =
     Boolean(productFilters.minPrice?.trim()) ||
-    Boolean(productFilters.maxPrice?.trim());
-
+    Boolean(productFilters.maxPrice?.trim()) ||
+    Boolean(productFilters.tags !== null);
   return (
     <div className="bg-white rounded-md">
       <div className="flex justify-between border-b p-4 cursor-default">
@@ -19,7 +19,7 @@ const ProductFilters = () => {
           <button
             className="underline text-lg cursor-pointer"
             onClick={() =>
-              setProductFilters({ minPrice: null, maxPrice: null })
+              setProductFilters({ minPrice: null, maxPrice: null, tags: null })
             }
           >
             Clear
