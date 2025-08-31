@@ -1,4 +1,4 @@
-import { parseAsString, useQueryStates } from 'nuqs';
+import { parseAsString, useQueryStates } from "nuqs";
 
 export const usePriceFilter = () => {
   return useQueryStates(

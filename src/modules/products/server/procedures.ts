@@ -1,15 +1,19 @@
-import { Where } from 'payload';
-import { z } from 'zod';
+import { Where } from "payload";
+import { z } from "zod";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+
+import { sortTypes } from "../searchParams";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(
       z.object({
         categorySlug: z.string().optional(),
-        minPrice: z.coerce.number().min(0).optional(),
-        maxPrice: z.coerce.number().min(0).optional(),
+        minPrice: z.string().nullable().optional(),
+        maxPrice: z.string().nullable().optional(),
+        tags: z.array(z.string()).nullable().optional(),
+        sort: z.enum(sortTypes).nullable().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -36,15 +40,36 @@ export const productsRouter = createTRPCRouter({
         });
 
         const where: Where = { category: { in: categoryIds } };
-        if (input.minPrice != null || input.maxPrice != null) {
-          where.price = {
-            ...(input.minPrice != null
-              ? { greater_than_equal: input.minPrice }
-              : {}),
-            ...(input.maxPrice != null
-              ? { less_than_equal: input.maxPrice }
-              : {}),
+
+        const minRaw =
+          typeof input.minPrice === "string" ? input.minPrice.trim() : "";
+        const maxRaw =
+          typeof input.maxPrice === "string" ? input.maxPrice.trim() : "";
+        const min = minRaw !== "" ? Number(minRaw) : undefined;
+        const max = maxRaw !== "" ? Number(maxRaw) : undefined;
+        const hasMin = typeof min === "number" && !Number.isNaN(min);
+        const hasMax = typeof max === "number" && !Number.isNaN(max);
+        if (hasMin || hasMax) {
+          let from = hasMin ? min : undefined;
+          let to = hasMax ? max : undefined;
+          if (from != null && to != null && from > to) [from, to] = [to, from];
+          const price: Record<string, number> = {};
+          if (from != null) price.greater_than_equal = from;
+          if (to != null) price.less_than_equal = to;
+          if (Object.keys(price).length) where.price = price;
+        }
+
+        if (input.tags && input.tags.length > 0) {
+          where["tags.slug"] = {
+            in: input.tags,
           };
+        }
+
+        let sort = "createdAt";
+        if (input.sort) {
+          if (input.sort === "curated") sort = "-createdAt";
+          else if (input.sort === "trending") sort = "name";
+          else if (input.sort === "hot_and_new") sort = "-name";
         }
 
         const { docs } = await ctx.payload.find({
@@ -52,6 +77,7 @@ export const productsRouter = createTRPCRouter({
           depth: 0,
           pagination: false,
           where: where,
+          sort,
           select: {
             name: true,
             description: true,
