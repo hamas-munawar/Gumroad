@@ -1,3 +1,4 @@
+import { SearchParams } from "nuqs";
 import { Suspense } from "react";
 
 import { getQueryClient, trpc } from "@/trpc/server";
@@ -7,18 +8,21 @@ import ProductsList from "./ProductsList";
 
 const CategoryPage = async ({
   params,
+  searchParams,
 }: Readonly<{
-  children: React.ReactNode;
   params: Promise<{ categories: string[] }>;
+  searchParams: Promise<SearchParams>;
 }>) => {
   const { categories } = await params;
   const categorySlug = categories[categories.length - 1];
-  console.log(categorySlug);
+
+  const productFilters = await searchParams;
 
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(
     trpc.products.getMany.queryOptions({
       categorySlug,
+      ...productFilters,
     })
   );
 
