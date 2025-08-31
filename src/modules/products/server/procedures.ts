@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
+import { sortTypes } from "../searchParams";
+
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(
@@ -11,6 +13,7 @@ export const productsRouter = createTRPCRouter({
         minPrice: z.coerce.number().nullable().optional(),
         maxPrice: z.coerce.number().nullable().optional(),
         tags: z.array(z.string()).nullable().optional(),
+        sort: z.enum(sortTypes).nullable().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -54,11 +57,19 @@ export const productsRouter = createTRPCRouter({
           };
         }
 
+        let sort = "createdAt";
+        if (input.sort) {
+          if (input.sort === "curated") sort = "-createdAt";
+          else if (input.sort === "trending") sort = "name";
+          else if (input.sort === "hot_and_new") sort = "-name";
+        }
+
         const { docs } = await ctx.payload.find({
           collection: "products",
           depth: 0,
           pagination: false,
           where: where,
+          sort,
           select: {
             name: true,
             description: true,
