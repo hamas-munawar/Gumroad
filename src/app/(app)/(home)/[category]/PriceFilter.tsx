@@ -4,13 +4,16 @@ import { ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { usePriceFilter } from '@/modules/hooks/usePriceFilter';
+import { useProductFilters } from '@/modules/hooks/useProductFilters';
 
 const PriceFilter = () => {
-  const [priceFilter, setPriceFilter] = usePriceFilter();
+  const [productFilters, setProductFilters] = useProductFilters();
 
-  const handlePriceChange = (key: keyof typeof priceFilter, value: string) => {
-    setPriceFilter({ ...priceFilter, [key]: value });
+  const handlePriceChange = (
+    key: keyof typeof productFilters,
+    value: string
+  ) => {
+    setProductFilters({ ...productFilters, [key]: value });
   };
 
   return (
@@ -25,7 +28,7 @@ const PriceFilter = () => {
           <Input
             type="number"
             placeholder="$0"
-            value={priceFilter.minPrice ?? ""}
+            value={productFilters.minPrice ?? ""}
             min={0}
             step="1"
             onChange={(e) =>
@@ -38,7 +41,7 @@ const PriceFilter = () => {
           <Input
             type="number"
             placeholder="$∞"
-            value={priceFilter.maxPrice ?? ""}
+            value={productFilters.maxPrice ?? ""}
             min={0}
             step="1"
             onChange={(e) =>

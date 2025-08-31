@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 
-import { usePriceFilter } from '@/modules/hooks/usePriceFilter';
+import { useProductFilters } from '@/modules/hooks/useProductFilters';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
@@ -11,7 +11,7 @@ import ProductCard from './ProductCard';
 const CategoryPage = () => {
   const params = useParams();
 
-  const [priceFilter] = usePriceFilter();
+  const [productFilters] = useProductFilters();
 
   const trpc = useTRPC();
   const rawCategory = Array.isArray(params.category)
@@ -20,8 +20,8 @@ const CategoryPage = () => {
   const { data: products } = useSuspenseQuery(
     trpc.products.getMany.queryOptions({
       categorySlug: rawCategory,
-      minPrice: priceFilter.minPrice?.trim() || undefined,
-      maxPrice: priceFilter.maxPrice?.trim() || undefined,
+      minPrice: productFilters.minPrice?.trim() || undefined,
+      maxPrice: productFilters.maxPrice?.trim() || undefined,
     })
   );
 

@@ -1,15 +1,15 @@
 "use client";
-import { usePriceFilter } from '@/modules/hooks/usePriceFilter';
+import { useProductFilters } from '@/modules/hooks/useProductFilters';
 
 import PriceFilter from './PriceFilter';
 import TagsFilter from './TagsFilter';
 
 const ProductFilters = () => {
-  const [priceFilter, setPriceFilter] = usePriceFilter();
+  const [productFilters, setProductFilters] = useProductFilters();
 
   const hasAnyFilters =
-    Boolean(priceFilter.minPrice?.trim()) ||
-    Boolean(priceFilter.maxPrice?.trim());
+    Boolean(productFilters.minPrice?.trim()) ||
+    Boolean(productFilters.maxPrice?.trim());
 
   return (
     <div className="bg-white rounded-md">
@@ -18,7 +18,9 @@ const ProductFilters = () => {
         {hasAnyFilters && (
           <button
             className="underline text-lg cursor-pointer"
-            onClick={() => setPriceFilter({ minPrice: null, maxPrice: null })}
+            onClick={() =>
+              setProductFilters({ minPrice: null, maxPrice: null })
+            }
           >
             Clear
           </button>
