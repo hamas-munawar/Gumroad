@@ -16,8 +16,8 @@ const SearchCategories = ({
   visibleCategories: CategoryForComponent[];
   hidden?: boolean;
 }) => {
-  const { categories } = useParams();
-  const selectedCategory = (categories && categories[0]) || undefined;
+  const params = useParams<{ categories?: string[] }>();
+  const selectedCategory = params.categories?.[0];
 
   return (
     <div className="relative flex gap-2" aria-label="Browse categories">

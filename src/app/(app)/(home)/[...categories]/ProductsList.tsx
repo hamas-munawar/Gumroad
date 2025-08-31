@@ -11,14 +11,8 @@ import ProductCard from "./ProductCard";
 const ProductsList = () => {
   const [productFilters] = useProductFilters();
 
-  const params = useParams();
-  let categorySlug: string | undefined;
-  if (params.categories)
-    if (params.categories.length > 1) {
-      categorySlug = params.categories[1];
-    } else {
-      categorySlug = params.categories[0];
-    }
+  const params = useParams<{ categories: string[] }>();
+  const categorySlug = params.categories?.at(-1);
 
   const trpc = useTRPC();
   const { data: products } = useSuspenseQuery(

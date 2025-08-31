@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const CategoriesBredgrum = () => {
-  const { categories } = useParams();
-  const [category, subCategory] = categories || [];
+  const params = useParams<{ categories?: string[] }>();
+  const [category, subCategory] = Array.isArray(params.categories)
+    ? params.categories
+    : [];
 
   return (
     <Breadcrumb>

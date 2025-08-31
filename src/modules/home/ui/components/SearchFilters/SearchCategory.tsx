@@ -14,8 +14,8 @@ interface Props {
 
 const SearchCategory = ({ category }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
-  const { categories } = useParams();
-  const selectedCategory = (categories && categories[0]) || undefined;
+  const params = useParams<{ categories?: string[] }>();
+  const selectedCategory = params.categories?.[0];
 
   const [left, setLeft] = useState(0);
 
