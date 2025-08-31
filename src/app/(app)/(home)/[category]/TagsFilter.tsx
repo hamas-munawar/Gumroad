@@ -36,7 +36,6 @@ const TagsFilter = () => {
               <Label htmlFor="checkbox" className="text-base">
                 {tag.name}
               </Label>
-              W
               <Checkbox id="checkbox" />
             </div>
           ))
@@ -45,7 +44,7 @@ const TagsFilter = () => {
           <button
             disabled={isFetchingNextPage}
             onClick={() => fetchNextPage()}
-            className="underline font-medium justify-start text-start disabled:opacity-50"
+            className="underline font-medium justify-start text-start disabled:opacity-50 cursor-pointer"
           >
             Load more...
           </button>
