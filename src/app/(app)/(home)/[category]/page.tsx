@@ -22,6 +22,7 @@ const CategoryPage = () => {
       categorySlug: rawCategory,
       minPrice: productFilters.minPrice?.trim() || undefined,
       maxPrice: productFilters.maxPrice?.trim() || undefined,
+      tags: productFilters.tags,
     })
   );
 

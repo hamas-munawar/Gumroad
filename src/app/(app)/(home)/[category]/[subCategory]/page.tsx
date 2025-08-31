@@ -20,6 +20,7 @@ const SubCategoryPage = () => {
       categorySlug: rawSubCategory,
       minPrice: productFilters.minPrice?.trim() || undefined,
       maxPrice: productFilters.maxPrice?.trim() || undefined,
+      tags: productFilters.tags,
     })
   );
   return (
