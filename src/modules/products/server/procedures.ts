@@ -10,8 +10,8 @@ export const productsRouter = createTRPCRouter({
     .input(
       z.object({
         categorySlug: z.string().optional(),
-        minPrice: z.coerce.number().nullable().optional(),
-        maxPrice: z.coerce.number().nullable().optional(),
+        minPrice: z.string().nullable().optional(),
+        maxPrice: z.string().nullable().optional(),
         tags: z.array(z.string()).nullable().optional(),
         sort: z.enum(sortTypes).nullable().optional(),
       })
@@ -40,12 +40,12 @@ export const productsRouter = createTRPCRouter({
         });
 
         const where: Where = { category: { in: categoryIds } };
-        if (input.minPrice != null || input.maxPrice != null) {
+        if (input.minPrice != "" || input.maxPrice != "") {
           where.price = {
-            ...(input.minPrice != null
+            ...(input.minPrice != ""
               ? { greater_than_equal: input.minPrice }
               : {}),
-            ...(input.maxPrice != null
+            ...(input.maxPrice != ""
               ? { less_than_equal: input.maxPrice }
               : {}),
           };

@@ -10,10 +10,10 @@ export const sortTypes = ["curated", "trending", "hot_and_new"] as const;
 export const useProductFilters = () => {
   return useQueryStates(
     {
-      minPrice: parseAsString,
-      maxPrice: parseAsString,
-      tags: parseAsArrayOf(parseAsString),
-      sort: parseAsStringLiteral(sortTypes),
+      minPrice: parseAsString.withDefault(""),
+      maxPrice: parseAsString.withDefault(""),
+      tags: parseAsArrayOf(parseAsString).withDefault([]),
+      sort: parseAsStringLiteral(sortTypes).withDefault("curated"),
     },
     {
       clearOnDefault: true,

@@ -1,8 +1,8 @@
 "use client";
-import { useProductFilters } from '@/modules/hooks/useProductFilters';
+import { useProductFilters } from "@/modules/hooks/useProductFilters";
 
-import PriceFilter from './PriceFilter';
-import TagsFilter from './TagsFilter';
+import PriceFilter from "./PriceFilter";
+import TagsFilter from "./TagsFilter";
 
 const ProductFilters = () => {
   const [productFilters, setProductFilters] = useProductFilters();
@@ -18,9 +18,7 @@ const ProductFilters = () => {
         {hasAnyFilters && (
           <button
             className="underline text-lg cursor-pointer"
-            onClick={() =>
-              setProductFilters({ minPrice: null, maxPrice: null, tags: null })
-            }
+            onClick={() => setProductFilters(null)}
           >
             Clear
           </button>
