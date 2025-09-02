@@ -48,7 +48,11 @@ const SearchCategory = ({ category }: Props) => {
           <div className="group-hover:border-b-black border-b-transparent border-x-transparent border-x-8 border-b-8 border-t-transparent w-4" />
         )}
       </div>
-      <div style={{ left }} className={`absolute top-[100%] w-60`} ref={ref}>
+      <div
+        style={{ left }}
+        className={`absolute top-[100%] w-60 z-50`}
+        ref={ref}
+      >
         {category?.subcategories && category.subcategories.length > 0 && (
           <SubCategories category={category} key={category.slug} />
         )}
