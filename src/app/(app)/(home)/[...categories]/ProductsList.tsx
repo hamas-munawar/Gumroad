@@ -32,7 +32,8 @@ const ProductsList = () => {
       },
       {
         getNextPageParam: (lastPage) => {
-          return lastPage!.docs.length > 0 ? lastPage!.nextPage : undefined;
+          const next = lastPage?.nextPage;
+          return typeof next === "number" ? next : undefined;
         },
       }
     )
