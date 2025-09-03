@@ -14,7 +14,7 @@ export default async function CategoryLayout({
           <SortFilter />
         </div>
       </div>
-      <div className="md:col-span-2 lg:col-span-2 border border-black rounded-md">
+      <div className="md:col-span-2 lg:col-span-2 border border-black rounded-md self-start">
         <ProductFilters />
       </div>
       <div className="md:col-span-3 lg:col-span-8">{children}</div>
