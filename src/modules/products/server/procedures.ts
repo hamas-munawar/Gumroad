@@ -9,6 +9,8 @@ export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
     .input(
       z.object({
+        cursor: z.number().int().min(1).default(1),
+        limit: z.number().int().min(1).max(50).default(2),
         categorySlug: z.string().optional(),
         minPrice: z.string().nullable().optional(),
         maxPrice: z.string().nullable().optional(),
@@ -17,7 +19,7 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.categorySlug) return [];
+      // if (!input.categorySlug) return [];
 
       const parentCategory = await ctx.payload.find({
         collection: "categories",
@@ -28,9 +30,9 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
-      if (!parentCategory.docs || parentCategory.docs.length === 0) {
-        return [];
-      }
+      // if (!parentCategory.docs || parentCategory.docs.length === 0) {
+      //   return [];
+      // }
 
       if (parentCategory.docs[0]) {
         const mainCategory = parentCategory.docs[0];
@@ -72,20 +74,16 @@ export const productsRouter = createTRPCRouter({
           else if (input.sort === "hot_and_new") sort = "-name";
         }
 
-        const { docs } = await ctx.payload.find({
+        const data = await ctx.payload.find({
           collection: "products",
-          depth: 0,
-          pagination: false,
-          where: where,
+          depth: 1,
+          where,
           sort,
-          select: {
-            name: true,
-            description: true,
-            price: true,
-          },
+          page: input.cursor,
+          limit: input.limit,
         });
 
-        return docs;
+        return data;
       }
     }),
 });

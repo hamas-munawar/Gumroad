@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
   product: {
@@ -67,3 +68,26 @@ const ProductCard = ({ product }: Props) => {
 };
 
 export default ProductCard;
+
+export const ProductCardSkeleton = () => {
+  return (
+    <Card className="w-md rounded-md p-0 overflow-hidden gap-0 max-w-xs border-none ">
+      <CardHeader className="p-0">
+        <Skeleton className="relative aspect-square w-full" />
+      </CardHeader>
+      <CardContent className="p-4  flex flex-col gap-2">
+        <Skeleton className="h-8 w-3/4 mb-2 rounded-md" />
+        <CardDescription className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <Skeleton className="rounded-full shrink-0 size-[16px]" />
+            <Skeleton className="h-4 w-20 rounded-md" />
+          </div>
+          <Skeleton className="h-5 w-16 rounded-md" />
+        </CardDescription>
+      </CardContent>
+      <CardFooter className="p-4 m-0">
+        <Skeleton className="h-6 w-20 rounded-md" />
+      </CardFooter>
+    </Card>
+  );
+};
