@@ -1,10 +1,10 @@
-import { cookies as getCookies, headers as getHeaders } from "next/headers";
+import { cookies as getCookies, headers as getHeaders } from 'next/headers';
 
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
-import { TRPCError } from "@trpc/server";
+import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { TRPCError } from '@trpc/server';
 
-import { AUTH_TOKEN } from "../constants";
-import { loginSchema, registerSchema } from "../schema";
+import { AUTH_TOKEN } from '../constants';
+import { loginSchema, registerSchema } from '../schema';
 
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
@@ -22,11 +22,22 @@ export const authRouter = createTRPCRouter({
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
       try {
+        const tenant = await ctx.payload.create({
+          collection: "tenants",
+          data: {
+            username: input.username,
+            slug: input.username,
+            stripAccountId: "test", // Will be updated after stripe account is created
+            stripDetailsSubmitted: false,
+          },
+        });
+
         await ctx.payload.create({
           collection: "users",
           data: {
             ...input,
             password: input.password,
+            tenants: [{ tenant: tenant.id }],
           },
         });
       } catch (error) {
