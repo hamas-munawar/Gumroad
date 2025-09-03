@@ -1,14 +1,15 @@
 "use client";
 
-import { InboxIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { InboxIcon } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
-import { Button } from "@/components/ui/button";
-import { useProductFilters } from "@/modules/hooks/useProductFilters";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
+import { useProductFilters } from '@/modules/hooks/useProductFilters';
+import { useTRPC } from '@/trpc/client';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 
-import ProductCard, { ProductCardSkeleton } from "./ProductCard";
+import ProductCard, { ProductCardSkeleton } from './ProductCard';
 
 const ProductsList = () => {
   const [productFilters] = useProductFilters();
@@ -27,7 +28,7 @@ const ProductsList = () => {
       {
         ...productFilters,
         categorySlug,
-        limit: 1,
+        limit: DEFAULT_PRODUCTS_LIMIT,
       },
       {
         getNextPageParam: (lastPage) => {
@@ -48,7 +49,7 @@ const ProductsList = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap justify-center md:justify-start">
         {products?.pages
           .flatMap((page) => page!.docs)
           .map((product) => (
@@ -58,7 +59,7 @@ const ProductsList = () => {
       {hasNextPage && (
         <Button
           variant={"elevated"}
-          className="font-medium text-base bg-white disabled:opacity-50 self-start"
+          className="font-medium text-base bg-white disabled:opacity-50 self-center md:self-start"
           onClick={() => fetchNextPage()}
           disabled={isFetchingNextPage}
         >
@@ -74,8 +75,8 @@ export default ProductsList;
 export const ProductsListSkeleton = () => {
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex gap-4">
-        {[...Array(1)].map((_, index) => (
+      <div className="flex gap-4 flex-wrap justify-center md:justify-start">
+        {[...Array(DEFAULT_PRODUCTS_LIMIT)].map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
       </div>
