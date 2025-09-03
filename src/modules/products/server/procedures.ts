@@ -1,4 +1,4 @@
-import { Where } from 'payload';
+import type { Where } from "payload";
 import { z } from 'zod';
 
 import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
