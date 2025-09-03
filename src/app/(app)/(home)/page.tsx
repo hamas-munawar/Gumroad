@@ -2,14 +2,13 @@ import { SearchParams } from "nuqs";
 import { Suspense } from "react";
 
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
-import { getQueryClient, trpc } from "@/trpc/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
-import ProductFilters from "./[...categories]/ProductFilters";
+import ProductFilters from "@/modules/productFilters/ui/ProductFilters";
+import SortFilter from "@/modules/productFilters/ui/SortFilter";
 import ProductsList, {
   ProductsListSkeleton,
-} from "./[...categories]/ProductsList";
-import SortFilter from "./[...categories]/SortFilter";
+} from "@/modules/products/ui/ProductsList";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function HomePage({
   searchParams,
