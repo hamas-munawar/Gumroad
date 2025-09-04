@@ -22,17 +22,52 @@ export const authRouter = createTRPCRouter({
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        await ctx.payload.create({
-          collection: "users",
+        const createdTenant = await ctx.payload.create({
+          collection: "tenants",
           data: {
-            ...input,
-            password: input.password,
+            username: input.username,
+            slug: input.username,
+            stripeAccountId: "test", // Will be updated after stripe account is created
+            stripeDetailsSubmitted: false,
           },
         });
+
+        const existing = await ctx.payload.find({
+          collection: "tenants",
+          where: { slug: { equals: input.username } },
+          limit: 1,
+        });
+        if (existing.totalDocs > 0) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Username is not available it's already taken",
+          });
+        }
+
+        try {
+          await ctx.payload.create({
+            collection: "users",
+            data: {
+              ...input,
+              password: input.password,
+              tenants: [{ tenant: createdTenant.id }],
+            },
+          });
+        } catch (userErr) {
+          // cleanup orphan tenant if user create fails
+          if (createdTenant?.id) {
+            await ctx.payload
+              .delete({ collection: "tenants", id: createdTenant.id })
+              .catch(() => {});
+          }
+          throw userErr;
+        }
       } catch (error) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Username is not available",
+          message: "Registration failed",
+          // keep cause for observability
+          cause: error as Error,
         });
       }
 

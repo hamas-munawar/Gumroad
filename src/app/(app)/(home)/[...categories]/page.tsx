@@ -1,11 +1,12 @@
-import { SearchParams } from 'nuqs';
-import { Suspense } from 'react';
+import { SearchParams } from "nuqs";
+import { Suspense } from "react";
 
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { getQueryClient, trpc } from '@/trpc/server';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-
-import ProductsList, { ProductsListSkeleton } from './ProductsList';
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import ProductsList, {
+  ProductsListSkeleton,
+} from "@/modules/products/ui/ProductsList";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 const CategoryPage = async ({
   params,

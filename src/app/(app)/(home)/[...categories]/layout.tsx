@@ -1,5 +1,5 @@
-import ProductFilters from "./ProductFilters";
-import SortFilter from "./SortFilter";
+import ProductFilters from "@/modules/productFilters/ui/ProductFilters";
+import SortFilter from "@/modules/productFilters/ui/SortFilter";
 
 export default async function CategoryLayout({
   children,
