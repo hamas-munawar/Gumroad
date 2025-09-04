@@ -14,7 +14,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
   // Normalize raw searchParams using the same logic as the client hook
   const productFilters = await loadSearchParams(searchParams);
