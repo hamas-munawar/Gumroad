@@ -33,7 +33,7 @@ export const Tenants: CollectionConfig = {
       },
     },
     {
-      name: "stripAccountId",
+      name: "stripeAccountId",
       type: "text",
       required: true,
       label: "Stripe Account ID",
@@ -42,9 +42,12 @@ export const Tenants: CollectionConfig = {
         description:
           "The Stripe Account ID for the store (e.g. acct_1N2bCdEfGhIjKlMn)",
       },
+      access: {
+        read: ({ req }) => req.user?.roles?.includes?.("super-admin") === true,
+      },
     },
     {
-      name: "stripDetailsSubmitted",
+      name: "stripeDetailsSubmitted",
       type: "checkbox",
       required: true,
       label: "Stripe Details Submitted",
@@ -52,6 +55,9 @@ export const Tenants: CollectionConfig = {
         readOnly: true,
         description:
           "You can't create products or accept payments until stripe details are submitted",
+      },
+      access: {
+        read: ({ req }) => req.user?.roles?.includes?.("super-admin") === true,
       },
     },
   ],

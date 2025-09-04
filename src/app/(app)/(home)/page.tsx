@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
 import ProductFilters from "@/modules/productFilters/ui/ProductFilters";
 import SortFilter from "@/modules/productFilters/ui/SortFilter";
+import { loadSearchParams } from "@/modules/products/searchParams";
 import ProductsList, {
   ProductsListSkeleton,
 } from "@/modules/products/ui/ProductsList";
@@ -12,10 +13,11 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function HomePage({
   searchParams,
-}: Readonly<{
-  searchParams: Promise<SearchParams>;
-}>) {
-  const productFilters = await searchParams;
+}: {
+  searchParams: SearchParams;
+}) {
+  // Normalize raw searchParams using the same logic as the client hook
+  const productFilters = await loadSearchParams(searchParams);
 
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery(

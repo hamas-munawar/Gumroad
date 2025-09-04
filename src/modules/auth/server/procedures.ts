@@ -1,10 +1,10 @@
-import { cookies as getCookies, headers as getHeaders } from 'next/headers';
+import { cookies as getCookies, headers as getHeaders } from "next/headers";
 
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
-import { TRPCError } from '@trpc/server';
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 
-import { AUTH_TOKEN } from '../constants';
-import { loginSchema, registerSchema } from '../schema';
+import { AUTH_TOKEN } from "../constants";
+import { loginSchema, registerSchema } from "../schema";
 
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
@@ -22,28 +22,52 @@ export const authRouter = createTRPCRouter({
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const tenant = await ctx.payload.create({
+        const createdTenant = await ctx.payload.create({
           collection: "tenants",
           data: {
             username: input.username,
             slug: input.username,
-            stripAccountId: "test", // Will be updated after stripe account is created
-            stripDetailsSubmitted: false,
+            stripeAccountId: "test", // Will be updated after stripe account is created
+            stripeDetailsSubmitted: false,
           },
         });
 
-        await ctx.payload.create({
-          collection: "users",
-          data: {
-            ...input,
-            password: input.password,
-            tenants: [{ tenant: tenant.id }],
-          },
+        const existing = await ctx.payload.find({
+          collection: "tenants",
+          where: { slug: { equals: input.username } },
+          limit: 1,
         });
+        if (existing.totalDocs > 0) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Username is not available it's already taken",
+          });
+        }
+
+        try {
+          await ctx.payload.create({
+            collection: "users",
+            data: {
+              ...input,
+              password: input.password,
+              tenants: [{ tenant: createdTenant.id }],
+            },
+          });
+        } catch (userErr) {
+          // cleanup orphan tenant if user create fails
+          if (createdTenant?.id) {
+            await ctx.payload
+              .delete({ collection: "tenants", id: createdTenant.id })
+              .catch(() => {});
+          }
+          throw userErr;
+        }
       } catch (error) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Username is not available",
+          message: "Registration failed",
+          // keep cause for observability
+          cause: error as Error,
         });
       }
 

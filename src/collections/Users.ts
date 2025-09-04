@@ -1,4 +1,4 @@
-import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields';
+import { tenantsArrayField } from "@payloadcms/plugin-multi-tenant/fields";
 
 import type { CollectionConfig } from "payload";
 
@@ -8,13 +8,13 @@ const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayTenantFieldName: "tenant",
   arrayFieldAccess: {
     read: () => true,
-    create: () => true,
-    update: () => true,
+    create: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
+    update: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
   },
   tenantFieldAccess: {
     read: () => true,
-    create: () => true,
-    update: () => true,
+    create: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
+    update: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
   },
 });
 
@@ -40,6 +40,11 @@ export const Users: CollectionConfig = {
       defaultValue: ["user"],
       hasMany: true,
       options: ["user", "super-admin"],
+      saveToJWT: true,
+      access: {
+        create: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
+        update: ({ req }) => Boolean(req.user?.roles?.includes("super-admin")),
+      },
       admin: {
         position: "sidebar",
       },

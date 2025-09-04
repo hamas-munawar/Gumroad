@@ -178,11 +178,11 @@ export interface Tenant {
   /**
    * The Stripe Account ID for the store (e.g. acct_1N2bCdEfGhIjKlMn)
    */
-  stripAccountId: string;
+  stripeAccountId: string;
   /**
    * You can't create products or accept payments until stripe details are submitted
    */
-  stripDetailsSubmitted: boolean;
+  stripeDetailsSubmitted: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -420,8 +420,8 @@ export interface TenantsSelect<T extends boolean = true> {
   username?: T;
   slug?: T;
   image?: T;
-  stripAccountId?: T;
-  stripDetailsSubmitted?: T;
+  stripeAccountId?: T;
+  stripeDetailsSubmitted?: T;
   updatedAt?: T;
   createdAt?: T;
 }

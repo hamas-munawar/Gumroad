@@ -7,10 +7,7 @@ export const registerSchema = z.object({
     .string("Username is Required")
     .min(3, "Username must be at least 3 characters long")
     .max(20, "Username must be at most 20 characters long")
-    .regex(
-      /^[a-zA-Z0-9]+$/,
-      "Username can only contain letters, numbers, and underscores"
-    )
+    .regex(/^[a-zA-Z0-9]+$/, "Username can only contain letters, and numbers")
     .refine(
       (val) => !["admin", "root", "superuser"].includes(val.toLowerCase()),
       "This username is not allowed"
