@@ -1,15 +1,17 @@
 "use client";
 
-import { InboxIcon } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { InboxIcon } from "lucide-react";
+import { useParams } from "next/navigation";
+import { PaginatedDocs } from "payload";
 
-import { Button } from '@/components/ui/button';
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { useProductFilters } from '@/modules/hooks/useProductFilters';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { useProductFilters } from "@/modules/hooks/useProductFilters";
+import { Product } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
-import ProductCard, { ProductCardSkeleton } from './ProductCard';
+import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 
 const ProductsList = () => {
   const [productFilters] = useProductFilters();
@@ -24,7 +26,9 @@ const ProductsList = () => {
     isFetchingNextPage,
     fetchNextPage,
   } = useSuspenseInfiniteQuery(
-    trpc.products.getMany.infiniteQueryOptions(
+    trpc.products.getMany.infiniteQueryOptions<
+      PaginatedDocs<Product & { image: { url: string } }>
+    >(
       {
         ...productFilters,
         categorySlug,

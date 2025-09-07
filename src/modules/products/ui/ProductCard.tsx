@@ -1,19 +1,20 @@
-import { StarIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { StarIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import {
-    Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Product } from "@/payload-types";
 
 interface Props {
-  product: {
-    id: string;
-    name: string;
-    description?: string | null | undefined;
-    price: number;
-  };
+  product: Product & { image: { url: string } };
 }
 
 const ProductCard = ({ product }: Props) => {
@@ -22,7 +23,7 @@ const ProductCard = ({ product }: Props) => {
       <CardHeader className="p-0">
         <div className="relative aspect-square border-b w-full ">
           <Image
-            src={"/placeholder.png"}
+            src={product.image.url || "/placeholder.png"}
             fill
             className="object-cover"
             alt={"Product Image"}
