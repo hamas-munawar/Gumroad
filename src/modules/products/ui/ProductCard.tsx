@@ -46,7 +46,7 @@ const ProductCard = ({ product }: Props) => {
               />
             )}
             <Link
-              href={"store/" + product.tenant.slug}
+              href={"/store/" + product.tenant.slug}
               className="underline text-lg"
             >
               {product.tenant.username}
