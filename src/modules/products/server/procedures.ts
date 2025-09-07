@@ -1,11 +1,11 @@
-import type { PaginatedDocs, Where } from "payload";
-import { z } from "zod";
+import type { Where } from "payload";
+import { z } from 'zod';
 
-import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
-import { Product } from "@/payload-types";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
+import { Tenant } from '@/payload-types';
+import { baseProcedure, createTRPCRouter } from '@/trpc/init';
 
-import { sortTypes } from "../searchParams";
+import { sortTypes } from '../searchParams';
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -21,75 +21,52 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      let data: PaginatedDocs<Product> = {} as PaginatedDocs<Product>;
-      // If there is no category slug, fetch all products with filters
-      if (!input.categorySlug) {
-        const { where, sort } = buildProductQuery(input);
-        data = await ctx.payload.find({
-          collection: "products",
-          depth: 2,
-          where,
-          sort,
-          page: input.cursor,
-          limit: input.limit,
+      // Initialize where and sort using the helper function
+      let { where, sort } = buildProductQuery(input);
+
+      // If a category slug is provided, find the category and update the query
+      if (input.categorySlug) {
+        const parentCategory = await ctx.payload.find({
+          collection: "categories",
+          pagination: false,
+          depth: 1,
+          where: {
+            slug: { equals: input.categorySlug },
+          },
         });
+
+        const mainCategory = parentCategory.docs[0];
+
+        // If the category is found, gather its ID and subcategory IDs
+        if (mainCategory) {
+          const categoryIds: string[] = [mainCategory.id];
+          mainCategory.subcategories?.docs?.forEach((cat) => {
+            if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
+          });
+
+          // Rebuild the query with the category IDs
+          const updatedQuery = buildProductQuery({ ...input, categoryIds });
+          where = updatedQuery.where;
+          sort = updatedQuery.sort;
+        }
       }
 
-      // If a category slug exists, find the parent category and its subcategories
-      const parentCategory = await ctx.payload.find({
-        collection: "categories",
-        pagination: false,
-        depth: 1,
-        where: {
-          slug: { equals: input.categorySlug },
-        },
+      const data = await ctx.payload.find({
+        collection: "products",
+        depth: 2,
+        where,
+        sort,
+        page: input.cursor,
+        limit: input.limit,
       });
 
-      // If the category is not found, fall back to the "all products" view
-      if (!parentCategory.docs || parentCategory.docs.length === 0) {
-        const { where, sort } = buildProductQuery(input);
-        data = await ctx.payload.find({
-          collection: "products",
-          depth: 2,
-          where,
-          sort,
-          page: input.cursor,
-          limit: input.limit,
-        });
-      }
-
-      // Found the category, now gather all relevant category IDs (parent + subcategories)
-      const mainCategory = parentCategory.docs[0];
-
-      if (mainCategory) {
-        const categoryIds: string[] = [mainCategory.id];
-        mainCategory.subcategories?.docs?.forEach((cat) => {
-          if (typeof cat !== "string" && cat.id) categoryIds.push(cat.id);
-        });
-
-        // Use the helper to build the query, including the category IDs
-        const { where, sort } = buildProductQuery({ ...input, categoryIds });
-
-        data = await ctx.payload.find({
-          collection: "products",
-          depth: 2,
-          where,
-          sort,
-          page: input.cursor,
-          limit: input.limit,
-        });
-      }
-
-      data = {
+      return {
         ...data,
         docs: data.docs.map((product) => ({
           ...product,
+          tenant: product.tenant as Tenant,
         })),
       };
-
-      console.log(data);
-
-      return data;
     }),
 });
 
