@@ -21,6 +21,19 @@ export const authRouter = createTRPCRouter({
   register: baseProcedure
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
+      const existing = await ctx.payload.find({
+        collection: "tenants",
+        where: { slug: { equals: input.username } },
+        limit: 1,
+      });
+
+      if (existing.totalDocs > 0) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Username is not available it's already taken",
+        });
+      }
+
       try {
         const createdTenant = await ctx.payload.create({
           collection: "tenants",
@@ -31,18 +44,6 @@ export const authRouter = createTRPCRouter({
             stripeDetailsSubmitted: false,
           },
         });
-
-        const existing = await ctx.payload.find({
-          collection: "tenants",
-          where: { slug: { equals: input.username } },
-          limit: 1,
-        });
-        if (existing.totalDocs > 0) {
-          throw new TRPCError({
-            code: "CONFLICT",
-            message: "Username is not available it's already taken",
-          });
-        }
 
         try {
           await ctx.payload.create({
