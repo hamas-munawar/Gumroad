@@ -12,16 +12,20 @@ import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function HomePage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ tenantSlug: string }>;
   searchParams: Promise<SearchParams>;
 }) {
-  // Normalize raw searchParams using the same logic as the client hook
   const productFilters = await loadSearchParams(searchParams);
+
+  const { tenantSlug } = await params;
 
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions({
+      tenantSlug,
       ...productFilters,
       limit: DEFAULT_PRODUCTS_LIMIT,
     })
