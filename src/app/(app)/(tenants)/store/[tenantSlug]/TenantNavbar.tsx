@@ -25,7 +25,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-20 py-4">
+    <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-4 lg:px-20 py-4">
       <div className="flex gap-2 justify-center items-center">
         {tenant.image?.url && (
           <Image
