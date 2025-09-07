@@ -21,7 +21,7 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   return (
-    <Card className="w-full rounded-md p-0 overflow-hidden gap-0 max-w-xs hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-[4px] hover:-translate-x-[4px] transition-all ">
+    <Card className="w-full rounded-md p-0 overflow-hidden gap-0 max-w-xs hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ">
       <CardHeader className="p-0">
         <div className="relative aspect-square border-b w-full ">
           <Image
