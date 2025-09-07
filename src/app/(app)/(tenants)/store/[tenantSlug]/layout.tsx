@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import ProductFilters from "@/modules/productFilters/ui/ProductFilters";
@@ -18,6 +19,16 @@ export default async function HomeLayout({
   const { tenantSlug } = await params;
 
   const queryClient = getQueryClient();
+  try {
+    await queryClient.fetchQuery(
+      trpc.tenants.getOne.queryOptions({
+        tenantSlug,
+      })
+    );
+  } catch {
+    notFound();
+  }
+
   await queryClient.prefetchQuery(
     trpc.tenants.getOne.queryOptions({
       tenantSlug,
