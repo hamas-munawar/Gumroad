@@ -11,15 +11,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Product } from "@/payload-types";
+import { Product, Tenant } from "@/payload-types";
 
 interface Props {
-  product: Product & { image: { url: string } };
+  product: Product & { image: { url: string } } & {
+    tenant: Tenant & { image?: { url: string } };
+  };
 }
 
 const ProductCard = ({ product }: Props) => {
   return (
-    <Card className="w-full rounded-md p-0 overflow-hidden gap-0 max-w-xs hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-[4px] hover:-translate-x-[4px] transition-all ">
+    <Card className="w-full rounded-md p-0 overflow-hidden gap-0 max-w-xs hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all ">
       <CardHeader className="p-0">
         <div className="relative aspect-square border-b w-full ">
           <Image
@@ -34,16 +36,20 @@ const ProductCard = ({ product }: Props) => {
         <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
           <div className="flex items-center gap-2">
-            {/* Fallback avatar placeholder to avoid invalid src */}
-            <Image
-              src={"/placeholder.png"}
-              alt="Author"
-              width={16}
-              height={16}
-              className="rounded-full border shrink-0 size-[16px]"
-            />
-            <Link href={"#"} className="underline text-lg">
-              hamas
+            {product.tenant.image?.url && (
+              <Image
+                src={product.tenant.image?.url}
+                alt="Author"
+                width={16}
+                height={16}
+                className="rounded-full border shrink-0 size-[16px] object-cover"
+              />
+            )}
+            <Link
+              href={"/store/" + product.tenant.slug}
+              className="underline text-lg"
+            >
+              {product.tenant.username}
             </Link>
           </div>
           <div className="flex gap-2">

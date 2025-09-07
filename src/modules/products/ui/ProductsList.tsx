@@ -7,7 +7,7 @@ import { PaginatedDocs } from "payload";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
 import { useProductFilters } from "@/modules/hooks/useProductFilters";
-import { Product } from "@/payload-types";
+import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
@@ -16,8 +16,9 @@ import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 const ProductsList = () => {
   const [productFilters] = useProductFilters();
 
-  const params = useParams<{ categories: string[] }>();
+  const params = useParams<{ categories: string[]; tenantSlug: string }>();
   const categorySlug = params.categories?.at(-1);
+  const tenantSlug = params.tenantSlug;
 
   const trpc = useTRPC();
   const {
@@ -27,11 +28,16 @@ const ProductsList = () => {
     fetchNextPage,
   } = useSuspenseInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions<
-      PaginatedDocs<Product & { image: { url: string } }>
+      PaginatedDocs<
+        Product & { image: { url: string } } & {
+          tenant: Tenant & { image: { url: string } };
+        }
+      >
     >(
       {
         ...productFilters,
         categorySlug,
+        tenantSlug,
         limit: DEFAULT_PRODUCTS_LIMIT,
       },
       {

@@ -16,7 +16,6 @@ export default async function HomePage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  // Normalize raw searchParams using the same logic as the client hook
   const productFilters = await loadSearchParams(searchParams);
 
   const queryClient = getQueryClient();
