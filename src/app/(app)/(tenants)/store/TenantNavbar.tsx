@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const popins = Poppins({
   subsets: ["latin"],
@@ -15,25 +16,26 @@ const popins = Poppins({
 });
 
 const Navbar = () => {
-  const { tenantSlug } = useParams();
-
   const trpc = useTRPC();
-  const { data: tenant } = useQuery(
-    trpc.tenants.getOne.queryOptions<Tenant & { image: { url: string } }>({
-      slug: tenantSlug as string,
+  const { tenantSlug } = useParams();
+  const { data: tenant } = useSuspenseQuery(
+    trpc.tenants.getOne.queryOptions<Tenant & { image?: { url: string } }>({
+      tenantSlug: tenantSlug as string,
     })
   );
 
   return (
     <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-20 py-4">
       <div className="flex gap-2 justify-center items-center">
-        <Image
-          src={tenant?.image?.url || "/placeholder.png"}
-          alt="Author"
-          width={48}
-          height={48}
-          className="rounded-full border shrink-0 size-[48px] object-cover"
-        />
+        {tenant.image?.url && (
+          <Image
+            src={tenant.image?.url}
+            alt="Author"
+            width={48}
+            height={48}
+            className="rounded-full border shrink-0 size-[48px] object-cover"
+          />
+        )}
         <Link
           href={`/store/${tenantSlug}`}
           className={cn(
@@ -44,9 +46,19 @@ const Navbar = () => {
           {tenant?.username}
         </Link>
       </div>
-      {/* <div className="hidden lg:flex gap-2 xl:gap-4"></div> */}
     </nav>
   );
 };
 
 export default Navbar;
+
+export const TenantNavbarSkeleton = () => {
+  return (
+    <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-20 py-4">
+      <div className="flex gap-2 justify-center items-center">
+        <Skeleton className="rounded-full shrink-0 size-[48px] h-12 w-12" />
+        <Skeleton className="h-8 w-48" />
+      </div>
+    </nav>
+  );
+};

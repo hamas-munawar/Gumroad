@@ -1,16 +1,21 @@
-import { StarIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { StarIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import {
-    Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Product, Tenant } from '@/payload-types';
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Product, Tenant } from "@/payload-types";
 
 interface Props {
   product: Product & { image: { url: string } } & {
-    tenant: Tenant & { image: { url: string } };
+    tenant: Tenant & { image?: { url: string } };
   };
 }
 
@@ -31,14 +36,15 @@ const ProductCard = ({ product }: Props) => {
         <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
           <div className="flex items-center gap-2">
-            {/* Fallback avatar placeholder to avoid invalid src */}
-            <Image
-              src={product.tenant.image.url || "/placeholder.png"}
-              alt="Author"
-              width={16}
-              height={16}
-              className="rounded-full border shrink-0 size-[16px] object-cover"
-            />
+            {product.tenant.image?.url && (
+              <Image
+                src={product.tenant.image?.url}
+                alt="Author"
+                width={16}
+                height={16}
+                className="rounded-full border shrink-0 size-[16px] object-cover"
+              />
+            )}
             <Link
               href={"store/" + product.tenant.slug}
               className="underline text-lg"

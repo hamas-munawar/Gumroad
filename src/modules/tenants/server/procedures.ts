@@ -7,7 +7,7 @@ export const tenantsRouter = createTRPCRouter({
   getOne: baseProcedure
     .input(
       z.object({
-        slug: z.string(),
+        tenantSlug: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -16,7 +16,7 @@ export const tenantsRouter = createTRPCRouter({
         pagination: false,
         limit: 1,
         where: {
-          slug: { equals: input.slug },
+          slug: { equals: input.tenantSlug },
         },
       });
 
