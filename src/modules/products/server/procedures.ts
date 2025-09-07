@@ -1,10 +1,11 @@
-import type { Where } from "payload";
-import { z } from 'zod';
+import type { PaginatedDocs, Where } from "payload";
+import { z } from "zod";
 
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { Product } from "@/payload-types";
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
-import { sortTypes } from '../searchParams';
+import { sortTypes } from "../searchParams";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -20,12 +21,13 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      let data: PaginatedDocs<Product> = {} as PaginatedDocs<Product>;
       // If there is no category slug, fetch all products with filters
       if (!input.categorySlug) {
         const { where, sort } = buildProductQuery(input);
-        return ctx.payload.find({
+        data = await ctx.payload.find({
           collection: "products",
-          depth: 1,
+          depth: 2,
           where,
           sort,
           page: input.cursor,
@@ -46,9 +48,9 @@ export const productsRouter = createTRPCRouter({
       // If the category is not found, fall back to the "all products" view
       if (!parentCategory.docs || parentCategory.docs.length === 0) {
         const { where, sort } = buildProductQuery(input);
-        return ctx.payload.find({
+        data = await ctx.payload.find({
           collection: "products",
-          depth: 1,
+          depth: 2,
           where,
           sort,
           page: input.cursor,
@@ -68,15 +70,26 @@ export const productsRouter = createTRPCRouter({
         // Use the helper to build the query, including the category IDs
         const { where, sort } = buildProductQuery({ ...input, categoryIds });
 
-        return ctx.payload.find({
+        data = await ctx.payload.find({
           collection: "products",
-          depth: 1,
+          depth: 2,
           where,
           sort,
           page: input.cursor,
           limit: input.limit,
         });
       }
+
+      data = {
+        ...data,
+        docs: data.docs.map((product) => ({
+          ...product,
+        })),
+      };
+
+      console.log(data);
+
+      return data;
     }),
 });
 

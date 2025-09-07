@@ -22,10 +22,9 @@ export const Products: CollectionConfig = {
       },
     },
     {
-      name: "images",
+      name: "image",
       type: "upload",
       relationTo: "media",
-      hasMany: true,
     },
     {
       name: "category",

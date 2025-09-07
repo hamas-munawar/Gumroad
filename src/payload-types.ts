@@ -236,7 +236,7 @@ export interface Product {
    * Price in USD
    */
   price: number;
-  images?: (string | Media)[] | null;
+  image?: (string | null) | Media;
   category?: (string | null) | Category;
   tags?: (string | Tag)[] | null;
   updatedAt: string;
@@ -396,7 +396,7 @@ export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   price?: T;
-  images?: T;
+  image?: T;
   category?: T;
   tags?: T;
   updatedAt?: T;
