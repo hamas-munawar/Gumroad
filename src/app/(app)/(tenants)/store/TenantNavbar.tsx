@@ -15,17 +15,17 @@ const popins = Poppins({
 });
 
 const Navbar = () => {
-  const { slug } = useParams();
+  const { tenantSlug } = useParams();
 
   const trpc = useTRPC();
   const { data: tenant } = useQuery(
     trpc.tenants.getOne.queryOptions<Tenant & { image: { url: string } }>({
-      slug: slug as string,
+      slug: tenantSlug as string,
     })
   );
 
   return (
-    <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-10 py-4">
+    <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-b items-center px-20 py-4">
       <div className="flex gap-2 justify-center items-center">
         <Image
           src={tenant?.image?.url || "/placeholder.png"}
@@ -35,7 +35,7 @@ const Navbar = () => {
           className="rounded-full border shrink-0 size-[48px] object-cover"
         />
         <Link
-          href={`/store/${slug}`}
+          href={`/store/${tenantSlug}`}
           className={cn(
             "pl-2 text-4xl xl:text-5xl font-semibold",
             popins.className

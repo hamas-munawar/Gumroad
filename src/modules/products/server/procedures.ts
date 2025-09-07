@@ -1,11 +1,11 @@
 import type { Where } from "payload";
-import { z } from 'zod';
+import { z } from "zod";
 
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { Tenant } from '@/payload-types';
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { Tenant } from "@/payload-types";
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
-import { sortTypes } from '../searchParams';
+import { sortTypes } from "../searchParams";
 
 export const productsRouter = createTRPCRouter({
   getMany: baseProcedure
@@ -18,6 +18,7 @@ export const productsRouter = createTRPCRouter({
         maxPrice: z.string().nullable().optional(),
         tags: z.array(z.string()).nullable().optional(),
         sort: z.enum(sortTypes).nullable().optional(),
+        tenantSlug: z.string().nullable().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -76,9 +77,15 @@ const buildProductQuery = (input: {
   maxPrice?: string | null;
   tags?: string[] | null;
   sort?: z.infer<typeof sortTypes> | null;
-  categoryIds?: string[]; // Optional category filter
+  categoryIds?: string[];
+  tenantSlug?: string | null;
 }): { where: Where; sort: string } => {
   const where: Where = {};
+
+  // Tenant filter logic
+  if (input.tenantSlug) {
+    where["tenant.slug"] = { equals: input.tenantSlug };
+  }
 
   // Price filter logic
   const minRaw =

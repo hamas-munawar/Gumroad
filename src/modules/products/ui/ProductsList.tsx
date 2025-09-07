@@ -1,23 +1,24 @@
 "use client";
 
-import { InboxIcon } from 'lucide-react';
-import { useParams } from 'next/navigation';
-import { PaginatedDocs } from 'payload';
+import { InboxIcon } from "lucide-react";
+import { useParams } from "next/navigation";
+import { PaginatedDocs } from "payload";
 
-import { Button } from '@/components/ui/button';
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { useProductFilters } from '@/modules/hooks/useProductFilters';
-import { Product, Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { useProductFilters } from "@/modules/hooks/useProductFilters";
+import { Product, Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
-import ProductCard, { ProductCardSkeleton } from './ProductCard';
+import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 
 const ProductsList = () => {
   const [productFilters] = useProductFilters();
 
-  const params = useParams<{ categories: string[] }>();
+  const params = useParams<{ categories: string[]; tenantSlug: string }>();
   const categorySlug = params.categories?.at(-1);
+  const tenantSlug = params.tenantSlug;
 
   const trpc = useTRPC();
   const {
@@ -36,6 +37,7 @@ const ProductsList = () => {
       {
         ...productFilters,
         categorySlug,
+        tenantSlug,
         limit: DEFAULT_PRODUCTS_LIMIT,
       },
       {
