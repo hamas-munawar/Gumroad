@@ -239,6 +239,7 @@ export interface Product {
   image?: (string | null) | Media;
   category?: (string | null) | Category;
   tags?: (string | Tag)[] | null;
+  refundPolicy: 'no-refunds' | '30-days' | '60-days';
   updatedAt: string;
   createdAt: string;
 }
@@ -399,6 +400,7 @@ export interface ProductsSelect<T extends boolean = true> {
   image?: T;
   category?: T;
   tags?: T;
+  refundPolicy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
