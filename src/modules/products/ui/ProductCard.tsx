@@ -33,7 +33,9 @@ const ProductCard = ({ product }: Props) => {
         </div>
       </CardHeader>
       <CardContent className="border-b p-4 text-black flex flex-col gap-2">
-        <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
+        <Link href={`/store/${product.tenant.slug}/products/${product.name}`}>
+          <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
+        </Link>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
           <div className="flex items-center gap-2">
             {product.tenant.image?.url && (
