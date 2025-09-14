@@ -6,9 +6,12 @@ import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { formatCurrency } from "@/lib/utils";
 import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import StarRating from "./StarRating";
 
 const ProductDetailView = () => {
   const { productId } = useParams();
@@ -42,7 +45,9 @@ const ProductDetailView = () => {
             <div className="flex border-b">
               <div className="px-6 py-4 flex items-center justify-center border-r">
                 <div className="px-2 py-1 border bg-pink-400 w-fit">
-                  <p className="text-base font-medium">{product.price}</p>
+                  <p className="text-base font-medium">
+                    {formatCurrency(product.price, "USD")}
+                  </p>
                 </div>
               </div>
               <div className="px-6 py-4 flex items-center justify-center border-r">
@@ -63,12 +68,10 @@ const ProductDetailView = () => {
                 </Link>
               </div>
               <div className="px-6 py-4 flex items-center justify-center">
-                <div className="hidden lg:flex gap-1">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <StarIcon key={index} size={20} className={"fill-black"} />
-                  ))}
+                <div className="hidden lg:flex">
+                  <StarRating rating={4} />
                 </div>
-                <div className="lg:hidden text-base font-medium">3.5/5</div>
+                <div className="lg:hidden text-base font-medium">4/5</div>
               </div>
             </div>
             <div>
