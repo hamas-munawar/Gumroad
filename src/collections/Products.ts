@@ -38,5 +38,25 @@ export const Products: CollectionConfig = {
       relationTo: "tags",
       hasMany: true,
     },
+    {
+      name: "refundPolicy",
+      type: "select",
+      options: [
+        {
+          label: "No Refunds",
+          value: "no-refunds",
+        },
+        {
+          label: "30 Day Refunds",
+          value: "30-days",
+        },
+        {
+          label: "60 Day Refunds",
+          value: "60-days",
+        },
+      ],
+      defaultValue: "no-refunds",
+      required: true,
+    },
   ],
 };

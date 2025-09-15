@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/utils";
 import { Product, Tenant } from "@/payload-types";
 
 interface Props {
@@ -33,7 +34,9 @@ const ProductCard = ({ product }: Props) => {
         </div>
       </CardHeader>
       <CardContent className="border-b p-4 text-black flex flex-col gap-2">
-        <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
+        <Link href={`/store/${product.tenant.slug}/products/${product.id}`}>
+          <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
+        </Link>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
           <div className="flex items-center gap-2">
             {product.tenant.image?.url && (
@@ -59,11 +62,7 @@ const ProductCard = ({ product }: Props) => {
       </CardContent>
       <CardFooter className="p-4 m-0">
         <p className="text-sm font-medium bg-pink-400 border px-2 py-1">
-          {new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            maximumFractionDigits: 1,
-          }).format(Number(product.price))}
+          {formatCurrency(product.price, "USD")}
         </p>
       </CardFooter>
     </Card>

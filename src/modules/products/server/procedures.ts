@@ -8,6 +8,17 @@ import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { sortTypes } from "../searchParams";
 
 export const productsRouter = createTRPCRouter({
+  getOne: baseProcedure
+    .input(z.object({ productId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const product = await ctx.payload.findByID({
+        collection: "products",
+        id: input.productId,
+        depth: 2,
+      });
+
+      return product;
+    }),
   getMany: baseProcedure
     .input(
       z.object({
