@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatCurrency } from "@/lib/utils";
+import ProductPrice from "@/modules/components/ProductPrice";
 import { Product, Tenant } from "@/payload-types";
 
 interface Props {
@@ -61,9 +61,7 @@ const ProductCard = ({ product }: Props) => {
         </CardDescription>
       </CardContent>
       <CardFooter className="p-4 m-0">
-        <p className="text-sm font-medium bg-pink-400 border px-2 py-1">
-          {formatCurrency(product.price, "USD")}
-        </p>
+        <ProductPrice amount={product.price} />
       </CardFooter>
     </Card>
   );
