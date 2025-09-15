@@ -26,13 +26,29 @@ const ProductDetailView = () => {
     })
   );
 
+  const productImageUrl =
+    product && typeof product.image === "object" && product.image?.url
+      ? product.image.url
+      : "/placeholder.png";
+  const tenantObj =
+    product && typeof product.tenant === "object" ? product.tenant : undefined;
+  const tenantAvatarUrl =
+    tenantObj &&
+    tenantObj.image &&
+    typeof tenantObj.image === "object" &&
+    tenantObj.image?.url
+      ? tenantObj.image.url
+      : "/auth-background.png";
+  const tenantSlug = tenantObj?.slug ?? "";
+  const tenantUsername = tenantObj?.username ?? "Unknown Store";
+
   return (
     <div className="p-4">
       <div className="bg-white border rounded-md overflow-hidden">
         <div className="relative aspect-[3.9] border-b min-h-48">
           <Image
-            src={product.image.url || "/placeholder.png"}
-            alt="Cover"
+            src={productImageUrl}
+            alt={`${product.name} cover`}
             fill
             className="object-cover"
           />
@@ -52,18 +68,18 @@ const ProductDetailView = () => {
               </div>
               <div className="px-6 py-4 flex items-center justify-center border-r">
                 <Link
-                  href={`/store/${product.tenant.slug}`}
+                  href={`/store/${tenantSlug}`}
                   className="flex gap-1 items-center justify-center"
                 >
                   <Image
-                    src={product.tenant.image.url || "/auth-background.png"}
-                    alt="Avatar"
+                    src={tenantAvatarUrl}
+                    alt={`${tenantUsername} avatar`}
                     width={24}
                     height={24}
                     className="rounded-full border shrink-0 size-[24px] object-cover"
                   />
                   <span className="underline text-base font-medium">
-                    {product.tenant.username}
+                    {tenantUsername}
                   </span>
                 </Link>
               </div>
