@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency } from "@/lib/utils";
+import ProductPrice from "@/modules/components/ProductPrice";
 import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -60,11 +60,7 @@ const ProductDetailView = () => {
             </h5>
             <div className="flex border-b">
               <div className="px-6 py-4 flex items-center justify-center border-r">
-                <div className="px-2 py-1 border bg-pink-400 w-fit">
-                  <p className="text-base font-medium">
-                    {formatCurrency(product.price, "USD")}
-                  </p>
-                </div>
+                <ProductPrice amount={product.price} />
               </div>
               <div className="px-6 py-4 flex items-center justify-center border-r">
                 <Link
