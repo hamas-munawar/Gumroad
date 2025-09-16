@@ -1,22 +1,17 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { Product, Tenant } from "@/payload-types";
-import { trpc } from "@/trpc/server";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { Product, Tenant } from '@/payload-types';
+import { trpc } from '@/trpc/server';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
-import ProductDetailView from "./ProductDetailView";
+import ProductDetailView from './ProductDetailView';
 
 interface ProductPageProps {
-  params: Promise<{ productId: string }>;
+  params: Promise<{ productId: string; tenantSlug: string }>;
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
-  const { productId } = await params;
-  console.log(productId);
+  const { productId, tenantSlug } = await params;
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(
@@ -30,7 +25,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProductDetailView />
+        <ProductDetailView productId={productId} tenantSlug={tenantSlug} />
       </Suspense>
     </HydrationBoundary>
   );
