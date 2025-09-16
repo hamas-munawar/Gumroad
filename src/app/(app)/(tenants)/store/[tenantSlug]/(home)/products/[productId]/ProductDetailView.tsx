@@ -55,7 +55,7 @@ const ProductDetailView = ({
   const tenantUsername = tenantObj?.username ?? "Unknown Store";
 
   return (
-    <div className="p-4">
+    <div className="py-4">
       <div className="bg-white border rounded-md overflow-hidden">
         <div className="relative aspect-[3.9] border-b min-h-48">
           <Image

@@ -1,11 +1,11 @@
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
-import { getQueryClient, trpc } from "@/trpc/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getQueryClient, trpc } from '@/trpc/server';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import TenantFooter from "./TenantFooter";
-import TenantNavbar, { TenantNavbarSkeleton } from "./TenantNavbar";
+import TenantFooter from './TenantFooter';
+import TenantNavbar, { TenantNavbarSkeleton } from './TenantNavbar';
 
 export default async function HomeLayout({
   params,
@@ -37,7 +37,7 @@ export default async function HomeLayout({
     <div className="flex flex-col min-h-screen">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={<TenantNavbarSkeleton />}>
-          <TenantNavbar />
+          <TenantNavbar tenantSlug={tenantSlug} />
         </Suspense>
       </HydrationBoundary>
       <div className="flex-1 px-4 lg:px-20 bg-[#f4f4f0]">{children}</div>

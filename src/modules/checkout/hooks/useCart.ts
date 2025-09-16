@@ -25,6 +25,7 @@ export const useCart = (tenantSlug: string) => {
 
   return {
     productIds,
+    totalItems: productIds.length,
     toggleProduct,
     addProduct: (productId: string) => addProduct(tenantSlug, productId),
     removeProduct: (productId: string) => removeProduct(tenantSlug, productId),

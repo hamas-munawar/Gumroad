@@ -1,23 +1,36 @@
 "use client";
-import { Poppins } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import dynamic from 'next/dynamic';
+import { Poppins } from 'next/font/google';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import { Tenant } from "@/payload-types";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+import { Tenant } from '@/payload-types';
+import { useTRPC } from '@/trpc/client';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+import { CheckoutButtonSkeleton } from './(home)/products/[productId]/CheckoutButton';
+
+const CheckoutButton = dynamic(
+  () =>
+    import("./(home)/products/[productId]/CheckoutButton").then(
+      (mod) => mod.default
+    ),
+  { ssr: false, loading: () => <CheckoutButtonSkeleton /> }
+);
 
 const popins = Poppins({
   subsets: ["latin"],
   weight: ["700"],
 });
 
-const Navbar = () => {
+interface NavbarProps {
+  tenantSlug: string;
+}
+
+const Navbar = ({ tenantSlug }: NavbarProps) => {
   const trpc = useTRPC();
-  const { tenantSlug } = useParams();
   const { data: tenant } = useSuspenseQuery(
     trpc.tenants.getOne.queryOptions<Tenant & { image?: { url: string } }>({
       tenantSlug: tenantSlug as string,
@@ -46,6 +59,7 @@ const Navbar = () => {
           {tenant?.username}
         </Link>
       </div>
+      <CheckoutButton hideIfEmpty tenantSlug={tenantSlug} />
     </nav>
   );
 };
