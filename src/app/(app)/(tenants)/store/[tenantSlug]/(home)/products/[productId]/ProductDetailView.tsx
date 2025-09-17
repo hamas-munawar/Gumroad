@@ -1,20 +1,33 @@
 "use client";
-import { LinkIcon, StarIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { LinkIcon, StarIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import ProductPrice from "@/modules/components/ProductPrice";
-import { Product, Tenant } from "@/payload-types";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import ProductPrice from '@/modules/components/ProductPrice';
+import { Product, Tenant } from '@/payload-types';
+import { useTRPC } from '@/trpc/client';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import StarRating from "./StarRating";
+import { CartButtonSkeleton } from './CartButton';
+import StarRating from './StarRating';
 
-const ProductDetailView = () => {
-  const { productId } = useParams();
+const CartButton = dynamic(
+  () => import("./CartButton").then((mod) => mod.default),
+  { ssr: false, loading: () => <CartButtonSkeleton /> }
+);
+
+interface ProductDetailViewProps {
+  productId: string;
+  tenantSlug: string;
+}
+
+const ProductDetailView = ({
+  tenantSlug,
+  productId,
+}: ProductDetailViewProps) => {
   const trpc = useTRPC();
   const { data: product } = useSuspenseQuery(
     trpc.products.getOne.queryOptions<
@@ -22,7 +35,7 @@ const ProductDetailView = () => {
         tenant: Tenant & { image: { url: string } };
       }
     >({
-      productId: productId as string,
+      productId,
     })
   );
 
@@ -39,11 +52,10 @@ const ProductDetailView = () => {
     tenantObj.image?.url
       ? tenantObj.image.url
       : "/auth-background.png";
-  const tenantSlug = tenantObj?.slug ?? "";
   const tenantUsername = tenantObj?.username ?? "Unknown Store";
 
   return (
-    <div className="p-4">
+    <div className="py-4">
       <div className="bg-white border rounded-md overflow-hidden">
         <div className="relative aspect-[3.9] border-b min-h-48">
           <Image
@@ -97,11 +109,17 @@ const ProductDetailView = () => {
           <div className="lg:col-span-2 border-t lg:border-t-0 lg:border-l">
             <div className="flex flex-col gap-4 p-6 border-b">
               <div className="flex items-center gap-2">
-                <Button variant={"elevated"} className="flex-1 bg-pink-400">
-                  Add to Cart
-                </Button>
-                <Button variant={"elevated"}>
-                  <LinkIcon />
+                <CartButton productId={productId} tenantSlug={tenantSlug} />
+                <Button
+                  variant="elevated"
+                  aria-label="Copy product link"
+                  title="Copy product link"
+                  onClick={() => {
+                    const url = `${window.location.origin}/store/${tenantSlug}/products/${productId}`;
+                    navigator.clipboard?.writeText?.(url)?.catch(() => {});
+                  }}
+                >
+                  <LinkIcon aria-hidden="true" />
                 </Button>
               </div>
               <p className="text-center font-medium">
