@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface TenantCart {
   productIds: string[];
@@ -18,18 +18,17 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       tenantCarts: {},
       addProduct: (tenantSlug, productId) =>
-        set((state) => ({
-          ...state,
-          tenantCarts: {
-            ...state.tenantCarts,
-            [tenantSlug]: {
-              productIds: [
-                ...(state.tenantCarts[tenantSlug]?.productIds || []),
-                productId,
-              ],
+        set((state) => {
+          const existing = state.tenantCarts[tenantSlug]?.productIds || [];
+          if (existing.includes(productId)) return state;
+          return {
+            ...state,
+            tenantCarts: {
+              ...state.tenantCarts,
+              [tenantSlug]: { productIds: [...existing, productId] },
             },
-          },
-        })),
+          };
+        }),
       removeProduct: (tenantSlug, productId) => {
         set((state) => {
           const currentCart = state.tenantCarts[tenantSlug];
@@ -67,7 +66,14 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "cart-storage",
-      storage: createJSONStorage(() => localStorage),
+      version: 1,
+      storage: createJSONStorage(() => {
+        try {
+          return localStorage;
+        } catch {
+          return undefined as unknown as Storage; // fallback to in-memory (no persist)
+        }
+      }),
     }
   )
 );

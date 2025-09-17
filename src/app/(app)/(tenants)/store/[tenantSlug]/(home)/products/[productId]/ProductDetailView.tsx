@@ -110,8 +110,16 @@ const ProductDetailView = ({
             <div className="flex flex-col gap-4 p-6 border-b">
               <div className="flex items-center gap-2">
                 <CartButton productId={productId} tenantSlug={tenantSlug} />
-                <Button variant={"elevated"}>
-                  <LinkIcon />
+                <Button
+                  variant="elevated"
+                  aria-label="Copy product link"
+                  title="Copy product link"
+                  onClick={() => {
+                    const url = `${window.location.origin}/store/${tenantSlug}/products/${productId}`;
+                    navigator.clipboard?.writeText?.(url)?.catch(() => {});
+                  }}
+                >
+                  <LinkIcon aria-hidden="true" />
                 </Button>
               </div>
               <p className="text-center font-medium">
