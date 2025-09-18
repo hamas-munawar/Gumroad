@@ -1,22 +1,20 @@
 "use client";
-import dynamic from 'next/dynamic';
-import { Poppins } from 'next/font/google';
-import Image from 'next/image';
-import Link from 'next/link';
+import dynamic from "next/dynamic";
+import { Poppins } from "next/font/google";
+import Image from "next/image";
+import Link from "next/link";
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { CheckoutButtonSkeleton } from './(home)/products/[productId]/CheckoutButton';
+import { CheckoutButtonSkeleton } from "./products/[productId]/CheckoutButton";
 
 const CheckoutButton = dynamic(
   () =>
-    import("./(home)/products/[productId]/CheckoutButton").then(
-      (mod) => mod.default
-    ),
+    import("./products/[productId]/CheckoutButton").then((mod) => mod.default),
   { ssr: false, loading: () => <CheckoutButtonSkeleton /> }
 );
 
