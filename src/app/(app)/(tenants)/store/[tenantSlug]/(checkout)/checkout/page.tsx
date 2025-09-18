@@ -1,4 +1,4 @@
-import CheckoutPage from "./CheckoutPage";
+import CheckoutPage from './CheckoutPage';
 
 const page = async ({
   params,
@@ -7,7 +7,11 @@ const page = async ({
 }) => {
   const { tenantSlug } = await params;
 
-  return <CheckoutPage tenantSlug={tenantSlug} />;
+  return (
+    <div className="py-6 max-w-5xl mx-auto ">
+      <CheckoutPage tenantSlug={tenantSlug} />
+    </div>
+  );
 };
 
 export default page;

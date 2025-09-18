@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader } from 'lucide-react';
+import { InboxIcon, Loader2 } from 'lucide-react';
 
 import { useCart } from '@/modules/checkout/hooks/useCart';
 import { Product, Tenant } from '@/payload-types';
@@ -24,26 +24,23 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
 
   if (isLoading) {
     return (
-      <div className="py-6 max-w-5xl mx-auto">
-        <div className="py-6 mx-auto border border-dotted rounded-md flex justify-center items-center">
-          <Loader />
-        </div>
+      <div className="border border-black border-dashed w-full flex flex-col justify-center items-center gap-4 rounded-lg bg-white p-8">
+        <Loader2 className="animate-spin" />
       </div>
     );
   }
 
   if (!products || products.length === 0) {
     return (
-      <div className="py-6 max-w-5xl mx-auto">
-        <div className="py-6 mx-auto border border-dotted rounded-md flex justify-center items-center">
-          No Product in your Cart.
-        </div>
+      <div className="border border-black border-dashed w-full flex flex-col justify-center items-center gap-4 rounded-lg bg-white p-8">
+        <InboxIcon />
+        <p className="text-base font-medium">No products in Your Cart.</p>
       </div>
     );
   }
 
   return (
-    <div className="py-6 max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-7 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
       <div className="col-span-4">
         <CheckoutItemsList products={products} tenantSlug={tenantSlug} />
       </div>
