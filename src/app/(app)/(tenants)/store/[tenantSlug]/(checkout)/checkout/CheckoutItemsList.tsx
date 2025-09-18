@@ -1,14 +1,14 @@
 "use client";
-import { Product, Tenant } from '@/payload-types';
+import { Product, Tenant } from "@/payload-types";
 
-import CheckoutItem from './CheckoutItem';
+import CheckoutItem from "./CheckoutItem";
 
 const CheckoutItemsList = ({
   products,
   tenantSlug,
 }: {
-  products: (Product & { image: { url: string } } & {
-    tenant: Tenant & { image: { url: string } };
+  products: (Product & { image?: { url: string } } & {
+    tenant: Tenant & { image?: { url: string } };
   })[];
   tenantSlug: string;
 }) => {
