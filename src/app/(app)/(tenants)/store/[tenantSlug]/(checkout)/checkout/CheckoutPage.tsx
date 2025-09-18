@@ -1,14 +1,14 @@
 "use client";
 
-import { InboxIcon, Loader2 } from 'lucide-react';
+import { InboxIcon, Loader2 } from "lucide-react";
 
-import { useCart } from '@/modules/checkout/hooks/useCart';
-import { Product, Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useQuery } from '@tanstack/react-query';
+import { useCart } from "@/modules/checkout/hooks/useCart";
+import { Product, Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
 
-import CheckoutItemsList from './CheckoutItemsList';
-import CheckoutSidebar from './CheckoutSidebar';
+import CheckoutItemsList from "./CheckoutItemsList";
+import CheckoutSidebar from "./CheckoutSidebar";
 
 const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
   const { productIds } = useCart(tenantSlug);
@@ -16,8 +16,8 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
   const trpc = useTRPC();
   const { data: products, isLoading } = useQuery(
     trpc.checkout.getProducts.queryOptions<
-      (Product & { image: { url: string } } & {
-        tenant: Tenant & { image: { url: string } };
+      (Product & { image?: { url: string } } & {
+        tenant: Tenant & { image?: { url: string } };
       })[]
     >({ productIds })
   );

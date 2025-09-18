@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils';
-import { Product, Tenant } from '@/payload-types';
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { Product, Tenant } from "@/payload-types";
 
 interface CheckoutSidebarProps {
-  products: (Product & { image: { url: string } } & {
-    tenant: Tenant & { image: { url: string } };
+  products: (Product & { image?: { url: string } } & {
+    tenant: Tenant & { image?: { url: string } };
   })[];
 }
 

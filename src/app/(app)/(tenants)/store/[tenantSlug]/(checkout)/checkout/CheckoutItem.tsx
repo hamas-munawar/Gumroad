@@ -1,13 +1,13 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
 
-import { cn, formatCurrency } from '@/lib/utils';
-import { useCart } from '@/modules/checkout/hooks/useCart';
-import { Product, Tenant } from '@/payload-types';
+import { cn, formatCurrency } from "@/lib/utils";
+import { useCart } from "@/modules/checkout/hooks/useCart";
+import { Product, Tenant } from "@/payload-types";
 
 interface CheckoutItemProps {
-  product: Product & { image: { url: string } } & {
-    tenant: Tenant & { image: { url: string } };
+  product: Product & { image?: { url: string } } & {
+    tenant: Tenant & { image?: { url: string } };
   };
   isLast?: boolean;
   tenantSlug: string;
@@ -41,7 +41,7 @@ const CheckoutItem = ({ product, isLast, tenantSlug }: CheckoutItemProps) => {
         <Link href={`/store/${tenantSlug}`} className="underline text-base">
           <div className="flex items-center gap-2">
             <Image
-              src={product.tenant.image.url || "/placeholder.png"}
+              src={product.tenant.image?.url || "/placeholder.png"}
               alt="Author"
               width={16}
               height={16}
