@@ -10,46 +10,40 @@ interface CartState {
   removeProduct: (tenantSlug: string, productId: string) => void;
   clearCart: (tenantSlug: string) => void;
   clearAllCarts: () => void;
-  getCartByTenant: (tenantSlug: string) => string[];
 }
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tenantCarts: {},
       addProduct: (tenantSlug, productId) =>
-        set((state) => {
-          const existing = state.tenantCarts[tenantSlug]?.productIds || [];
-          if (existing.includes(productId)) return state;
-          return {
-            ...state,
-            tenantCarts: {
-              ...state.tenantCarts,
-              [tenantSlug]: { productIds: [...existing, productId] },
+        set((state) => ({
+          ...state,
+          tenantCarts: {
+            ...state.tenantCarts,
+            [tenantSlug]: {
+              productIds: [
+                ...(state.tenantCarts[tenantSlug]?.productIds || []),
+                productId,
+              ],
             },
-          };
-        }),
+          },
+        })),
       removeProduct: (tenantSlug, productId) => {
-        set((state) => {
-          const currentCart = state.tenantCarts[tenantSlug];
-          if (!currentCart) return state;
-
-          const updatedProductIds = currentCart.productIds.filter(
-            (id) => id !== productId
-          );
-
-          return {
-            ...state,
-            tenantCarts: {
-              ...state.tenantCarts,
-              [tenantSlug]: { productIds: updatedProductIds },
+        set((state) => ({
+          tenantCarts: {
+            ...state.tenantCarts,
+            [tenantSlug]: {
+              productIds:
+                state.tenantCarts[tenantSlug]?.productIds.filter(
+                  (id) => id !== productId
+                ) || [],
             },
-          };
-        });
+          },
+        }));
       },
       clearCart: (tenantSlug) => {
         set((state) => ({
-          ...state,
           tenantCarts: {
             ...state.tenantCarts,
             [tenantSlug]: { productIds: [] },
@@ -58,10 +52,6 @@ export const useCartStore = create<CartState>()(
       },
       clearAllCarts: () => {
         set({ tenantCarts: {} });
-      },
-      getCartByTenant: (tenantSlug) => {
-        const cart = get().tenantCarts[tenantSlug];
-        return cart ? cart.productIds : [];
       },
     }),
     {

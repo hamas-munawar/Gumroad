@@ -15,9 +15,8 @@ import CheckoutItemsList from "./CheckoutItemsList";
 import CheckoutSidebar from "./CheckoutSidebar";
 
 const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
-  const [states, setStates] = useCheckoutStates();
   const router = useRouter();
-
+  const [states, setStates] = useCheckoutStates();
   const { productIds, clearCart } = useCart(tenantSlug);
 
   const trpc = useTRPC();
@@ -30,27 +29,8 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
       (Product & { image?: { url: string } } & {
         tenant: Tenant & { image?: { url: string } };
       })[]
-    >({ productIds })
+    >({ productIds }, { enabled: productIds.length > 0 })
   );
-
-  useEffect(() => {
-    if (states.success) {
-      setStates({ success: false, cancel: false });
-      clearCart();
-      toast.success("Purchase successful!");
-      // TODO: Invalidate Library
-      router.push(`/store/${tenantSlug}`);
-    }
-  }, [states.success, clearCart, router, tenantSlug, setStates]);
-
-  useEffect(() => {
-    if (error?.data?.code === "NOT_FOUND") {
-      clearCart();
-      toast.warning(
-        "Some products in your cart are no longer available. Cart cleared."
-      );
-    }
-  }, [error, clearCart]);
 
   const purchase = useMutation(
     trpc.checkout.purchase.mutationOptions({
@@ -75,6 +55,24 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
       },
     })
   );
+
+  useEffect(() => {
+    if (states.success) {
+      setStates({ success: false, cancel: false });
+      clearCart();
+      // TODO: Invalidate Library
+      router.push(`/`);
+    }
+  }, [states.success, clearCart, router, setStates]);
+
+  useEffect(() => {
+    if (error?.data?.code === "NOT_FOUND") {
+      clearCart();
+      toast.warning(
+        "Some products in your cart are no longer available. Cart cleared."
+      );
+    }
+  }, [error, clearCart]);
 
   if (isLoading) {
     return (
