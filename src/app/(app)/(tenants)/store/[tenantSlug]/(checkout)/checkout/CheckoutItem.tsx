@@ -14,8 +14,7 @@ interface CheckoutItemProps {
 }
 
 const CheckoutItem = ({ product, isLast, tenantSlug }: CheckoutItemProps) => {
-  const cart = useCart(tenantSlug);
-
+  const { removeProduct } = useCart(tenantSlug);
   return (
     <div
       className={cn(
@@ -57,7 +56,7 @@ const CheckoutItem = ({ product, isLast, tenantSlug }: CheckoutItemProps) => {
         </p>
         <button
           className="text-base font-medium underline cursor-pointer"
-          onClick={() => cart.removeProduct(product.id)}
+          onClick={() => removeProduct(product.id)}
         >
           Remove
         </button>
