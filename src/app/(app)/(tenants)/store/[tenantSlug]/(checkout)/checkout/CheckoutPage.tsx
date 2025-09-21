@@ -61,7 +61,7 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
       setStates({ success: false, cancel: false });
       clearCart();
       // TODO: Invalidate Library
-      router.push(`/`);
+      router.push("/library");
     }
   }, [states.success, clearCart, router, setStates]);
 
