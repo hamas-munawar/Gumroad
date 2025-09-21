@@ -95,7 +95,7 @@ const SearchFilters = () => {
           <SearchInput />
         </div>
         {session?.user && (
-          <Button variant="elevated">
+          <Button variant="elevated" asChild>
             <Link prefetch href="/library" className="flex items-center gap-2">
               <BookmarkCheckIcon />
               Library
