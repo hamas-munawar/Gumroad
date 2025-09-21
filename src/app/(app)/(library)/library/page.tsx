@@ -9,7 +9,7 @@ import ProductsList from "./ProductsList";
 const LibraryPage = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery(
-    trpc.library.getProducts.infiniteQueryOptions({
+    trpc.library.getMany.infiniteQueryOptions({
       limit: DEFAULT_PRODUCTS_LIMIT,
     })
   );

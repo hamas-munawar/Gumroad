@@ -9,7 +9,7 @@ import { useCart } from "@/modules/checkout/hooks/useCart";
 import { useCheckoutStates } from "@/modules/checkout/hooks/useCheckoutStates";
 import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import CheckoutItemsList from "./CheckoutItemsList";
 import CheckoutSidebar from "./CheckoutSidebar";
@@ -18,6 +18,8 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
   const router = useRouter();
   const [states, setStates] = useCheckoutStates();
   const { productIds, clearCart } = useCart(tenantSlug);
+
+  const queryClient = useQueryClient();
 
   const trpc = useTRPC();
   const {
@@ -58,12 +60,24 @@ const CheckoutPage = ({ tenantSlug }: { tenantSlug: string }) => {
 
   useEffect(() => {
     if (states.success) {
+      // First, perform all state updates and side effects
       setStates({ success: false, cancel: false });
       clearCart();
-      // TODO: Invalidate Library
-      router.push("/library");
+      queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
+
+      // Then, schedule the navigation with a slight delay
+      setTimeout(() => {
+        router.push("/library");
+      }, 50);
     }
-  }, [states.success, clearCart, router, setStates]);
+  }, [
+    states.success,
+    clearCart,
+    router,
+    setStates,
+    queryClient,
+    trpc.library.getMany,
+  ]);
 
   useEffect(() => {
     if (error?.data?.code === "NOT_FOUND") {

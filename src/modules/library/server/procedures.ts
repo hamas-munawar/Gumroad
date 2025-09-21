@@ -4,7 +4,7 @@ import { DEFAULT_TAGS_LIMIT } from "@/constants";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
 export const libraryRouter = createTRPCRouter({
-  getProducts: protectedProcedure
+  getMany: protectedProcedure
     .input(
       z.object({
         cursor: z.number().int().min(1).default(1),

@@ -19,7 +19,7 @@ const ProductsList = () => {
     isFetchingNextPage,
     fetchNextPage,
   } = useSuspenseInfiniteQuery(
-    trpc.library.getProducts.infiniteQueryOptions<
+    trpc.library.getMany.infiniteQueryOptions<
       PaginatedDocs<
         Order & {
           product: Product & { image?: { url: string } } & {
