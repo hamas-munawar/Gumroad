@@ -1,18 +1,18 @@
 "use client";
-import { LinkIcon, StarIcon } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import Link from 'next/link';
+import { LinkIcon, StarIcon } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import ProductPrice from '@/modules/components/ProductPrice';
-import { Product, Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import ProductPrice from "@/modules/components/ProductPrice";
+import { Product, Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { CartButtonSkeleton } from './CartButton';
-import StarRating from './StarRating';
+import { CartButtonSkeleton } from "./CartButton";
+import StarRating from "./StarRating";
 
 const CartButton = dynamic(
   () => import("./CartButton").then((mod) => mod.default),
@@ -31,7 +31,7 @@ const ProductDetailView = ({
   const trpc = useTRPC();
   const { data: product } = useSuspenseQuery(
     trpc.products.getOne.queryOptions<
-      Product & { image: { url: string } } & {
+      Product & { isPurchased: boolean } & { image: { url: string } } & {
         tenant: Tenant & { image: { url: string } };
       }
     >({
@@ -109,7 +109,11 @@ const ProductDetailView = ({
           <div className="lg:col-span-2 border-t lg:border-t-0 lg:border-l">
             <div className="flex flex-col gap-4 p-6 border-b">
               <div className="flex items-center gap-2">
-                <CartButton productId={productId} tenantSlug={tenantSlug} />
+                <CartButton
+                  isPurchased={product.isPurchased}
+                  productId={productId}
+                  tenantSlug={tenantSlug}
+                />
                 <Button
                   variant="elevated"
                   aria-label="Copy product link"

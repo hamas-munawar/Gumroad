@@ -8,7 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const CategoriesBredgrum = () => {
+const CategoriesBreadcrumb = () => {
   const params = useParams<{ categories?: string[] }>();
   const [category, subCategory] = Array.isArray(params.categories)
     ? params.categories
@@ -40,4 +40,4 @@ const CategoriesBredgrum = () => {
   );
 };
 
-export default CategoriesBredgrum;
+export default CategoriesBreadcrumb;

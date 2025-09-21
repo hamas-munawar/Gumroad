@@ -1,13 +1,16 @@
 "use client";
 
+import { BookmarkCheckIcon } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 import { CategoryForComponent } from "@/types/trpc";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
-import CategoriesBredgrum from "./CategoriesBredgrum";
+import CategoriesBreadcrumb from "./CategoriesBreadcrumb";
 import SearchCategories from "./SearchCategories";
 import SearchInput from "./SearchInput";
 
@@ -22,6 +25,8 @@ const SearchFilters = () => {
   const { data: data } = useSuspenseQuery(
     trpc.categories.getMany.queryOptions()
   );
+
+  const { data: session } = useQuery(trpc.auth.session.queryOptions());
 
   const { categories } = useParams();
   const selectedCategory = data?.find(
@@ -85,8 +90,18 @@ const SearchFilters = () => {
       style={{ backgroundColor: selectedCategory?.color || "inherit" }}
     >
       <div ref={containerRef} className="hidden md:block" />
-      <div className="flex-1">
-        <SearchInput />
+      <div className="flex-1 flex gap-2">
+        <div className="flex-1">
+          <SearchInput />
+        </div>
+        {session?.user && (
+          <Button variant="elevated" asChild>
+            <Link prefetch href="/library" className="flex items-center gap-2">
+              <BookmarkCheckIcon />
+              Library
+            </Link>
+          </Button>
+        )}
       </div>
       <div>
         <SearchCategories
@@ -95,7 +110,7 @@ const SearchFilters = () => {
         />
       </div>
       <div className="hidden md:block">
-        {selectedCategory && <CategoriesBredgrum />}
+        {selectedCategory && <CategoriesBreadcrumb />}
       </div>
     </div>
   );

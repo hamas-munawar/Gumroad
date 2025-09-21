@@ -8,7 +8,7 @@ const popins = Poppins({
   weight: ["700"],
 });
 
-const TenantFooter = () => {
+const Footer = () => {
   return (
     <nav className="h-16 xl:h-20 flex justify-between bg-white font-medium border-t items-center px-4 lg:px-20 py-4">
       <div className="flex gap-1 justify-center items-end">
@@ -27,4 +27,4 @@ const TenantFooter = () => {
   );
 };
 
-export default TenantFooter;
+export default Footer;
