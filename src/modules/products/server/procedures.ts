@@ -1,4 +1,4 @@
-import type { Where } from "payload";
+import { headers as getHeaders } from "next/headers";
 import { z } from "zod";
 
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
@@ -7,6 +7,7 @@ import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 import { sortTypes } from "../searchParams";
 
+import type { Where } from "payload";
 export const productsRouter = createTRPCRouter({
   getOne: baseProcedure
     .input(z.object({ productId: z.string().min(1) }))
@@ -17,13 +18,21 @@ export const productsRouter = createTRPCRouter({
         depth: 2,
       });
 
+      const headers = await getHeaders();
+      const session = await ctx.payload.auth({ headers });
+
+      if (!session.user) return { ...product, isPurchased: false };
+
       const orders = await ctx.payload.find({
         collection: "orders",
         pagination: false,
         limit: 1,
         depth: 0,
         where: {
-          product: { equals: input.productId },
+          and: [
+            { product: { equals: input.productId } },
+            { user: { equals: session.user.id } },
+          ],
         },
       });
 
