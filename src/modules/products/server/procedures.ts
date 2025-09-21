@@ -17,7 +17,17 @@ export const productsRouter = createTRPCRouter({
         depth: 2,
       });
 
-      return product;
+      const order = await ctx.payload.find({
+        collection: "orders",
+        pagination: false,
+        where: {
+          product: { equals: input.productId },
+        },
+      });
+
+      const isPurchased = order.totalDocs > 0;
+
+      return { ...product, isPurchased };
     }),
   getMany: baseProcedure
     .input(

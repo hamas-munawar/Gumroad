@@ -1,28 +1,43 @@
 "use client";
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useCart } from '@/modules/checkout/hooks/useCart';
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useCart } from "@/modules/checkout/hooks/useCart";
 
 interface CartButtonProps {
   productId: string;
   tenantSlug: string;
+  isPurchased?: boolean;
 }
 
-const CartButton = ({ tenantSlug, productId }: CartButtonProps) => {
+const CartButton = ({
+  tenantSlug,
+  productId,
+  isPurchased,
+}: CartButtonProps) => {
   const cart = useCart(tenantSlug);
 
   return (
-    <Button
-      variant={"elevated"}
-      className={cn(
-        "flex-1 bg-pink-400",
-        cart.hasProduct(productId) && "bg-white"
+    <>
+      {isPurchased ? (
+        <Button variant={"elevated"} className={cn("flex-1 bg-white")}>
+          <Link href={"/library"}>View In Library</Link>
+        </Button>
+      ) : (
+        <Button
+          variant={"elevated"}
+          className={cn(
+            "flex-1 bg-pink-400",
+            cart.hasProduct(productId) && "bg-white"
+          )}
+          onClick={() => cart.toggleProduct(productId)}
+        >
+          {cart.hasProduct(productId) ? "Remove from Cart" : "Add to Cart"}
+        </Button>
       )}
-      onClick={() => cart.toggleProduct(productId)}
-    >
-      {cart.hasProduct(productId) ? "Remove from Cart" : "Add to Cart"}
-    </Button>
+    </>
   );
 };
 
