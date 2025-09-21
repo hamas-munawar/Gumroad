@@ -33,7 +33,7 @@ const ProductCard = ({ product }: Props) => {
         </div>
       </CardHeader>
       <CardContent className="p-4 text-black flex flex-col gap-2">
-        <Link href={`/store/${product.tenant.slug}/products/${product.id}`}>
+        <Link prefetch href={`/library/${product.id}`}>
           <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
         </Link>
         <CardDescription className="flex flex-col gap-2 text-black text-base">

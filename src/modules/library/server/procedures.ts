@@ -4,6 +4,23 @@ import { DEFAULT_TAGS_LIMIT } from "@/constants";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
 export const libraryRouter = createTRPCRouter({
+  getOne: protectedProcedure
+    .input(z.object({ productId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.payload.find({
+        collection: "orders",
+        limit: 1,
+        depth: 2,
+        pagination: false,
+        where: {
+          and: [
+            { product: { equals: input.productId } },
+            { user: { equals: ctx.session.user.id } },
+          ],
+        },
+      });
+    }),
+
   getMany: protectedProcedure
     .input(
       z.object({
