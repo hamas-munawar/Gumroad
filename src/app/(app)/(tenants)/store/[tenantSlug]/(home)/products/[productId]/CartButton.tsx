@@ -22,8 +22,8 @@ const CartButton = ({
   return (
     <>
       {isPurchased ? (
-        <Button variant={"elevated"} className={cn("flex-1 bg-white")}>
-          <Link href={"/library"}>View In Library</Link>
+        <Button asChild variant="elevated" className={cn("flex-1 bg-white")}>
+          <Link href="/library">View In Library</Link>
         </Button>
       ) : (
         <Button
