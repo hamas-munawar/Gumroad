@@ -1,43 +1,34 @@
 "use client";
 
 import { InboxIcon } from "lucide-react";
-import { useParams } from "next/navigation";
 import { PaginatedDocs } from "payload";
 
 import { Button } from "@/components/ui/button";
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
-import { useProductFilters } from "@/modules/hooks/useProductFilters";
-import { Product, Tenant } from "@/payload-types";
+import { Order, Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 
 import ProductCard, { ProductCardSkeleton } from "./ProductCard";
 
 const ProductsList = () => {
-  const [productFilters] = useProductFilters();
-
-  const params = useParams<{ categories: string[]; tenantSlug: string }>();
-  const categorySlug = params.categories?.at(-1);
-  const tenantSlug = params.tenantSlug;
-
   const trpc = useTRPC();
   const {
-    data: products,
+    data: orders,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
   } = useSuspenseInfiniteQuery(
-    trpc.products.getMany.infiniteQueryOptions<
+    trpc.library.getProducts.infiniteQueryOptions<
       PaginatedDocs<
-        Product & { image: { url: string } } & {
-          tenant: Tenant & { image: { url: string } };
+        Order & {
+          product: Product & { image?: { url: string } } & {
+            tenant: Tenant & { image?: { url: string } };
+          };
         }
       >
     >(
       {
-        ...productFilters,
-        categorySlug,
-        tenantSlug,
         limit: DEFAULT_PRODUCTS_LIMIT,
       },
       {
@@ -49,11 +40,11 @@ const ProductsList = () => {
     )
   );
 
-  if (!products || products.pages[0]?.docs.length === 0) {
+  if (!orders || orders.pages[0]?.docs.length === 0) {
     return (
       <div className="border border-black border-dashed w-full flex flex-col justify-center items-center gap-4 rounded-lg bg-white p-8">
         <InboxIcon />
-        <p className="text-base font-medium">No products found.</p>
+        <p className="text-base font-medium">No Purchased products.</p>
       </div>
     );
   }
@@ -61,10 +52,10 @@ const ProductsList = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex gap-4 flex-wrap justify-center md:justify-start">
-        {products?.pages
+        {orders?.pages
           .flatMap((page) => page!.docs)
-          .map((product) => (
-            <ProductCard product={product} key={product.id} />
+          .map((order) => (
+            <ProductCard product={order.product} key={order.id} />
           ))}
       </div>
       {hasNextPage && (

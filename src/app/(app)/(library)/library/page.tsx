@@ -1,8 +1,19 @@
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import ProductsList from "./ProductsList";
 
-const LibraryPage = () => {
+const LibraryPage = async () => {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchInfiniteQuery(
+    trpc.library.getProducts.infiniteQueryOptions({
+      limit: DEFAULT_PRODUCTS_LIMIT,
+    })
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -13,7 +24,9 @@ const LibraryPage = () => {
         </p>
       </header>
       <div className="flex-1 px-4 lg:px-20 py-4">
-        <ProductsList />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <ProductsList />
+        </HydrationBoundary>
       </div>
       <Footer />
     </div>
