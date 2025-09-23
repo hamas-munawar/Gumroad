@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import StarPicker from "./StarPicker";
 
@@ -22,16 +33,45 @@ const formSchema = z.object({
     .max(5, { message: "Rating must be at most 5" }),
   description: z
     .string()
-    .min(10, { message: "Description must be at least 10 characters long" })
+    .min(1, { message: "Description is required" })
     .max(500, { message: "Description must be at most 500 characters long" }),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
 
 const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
+  const queryClient = useQueryClient();
   const trpc = useTRPC();
   const { data: review } = useSuspenseQuery(
     trpc.reviews.getOne.queryOptions({ productId })
+  );
+
+  const createReview = useMutation(
+    trpc.reviews.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          trpc.reviews.getOne.queryOptions({ productId })
+        );
+        setIsPreview(true);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  );
+
+  const updateReview = useMutation(
+    trpc.reviews.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries(
+          trpc.reviews.getOne.queryOptions({ productId })
+        );
+        setIsPreview(true);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
   );
 
   const initialReviewData = review
@@ -48,11 +88,19 @@ const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
     resolver: zodResolver(formSchema),
   });
 
+  const onSubmit = (data: FormSchema) => {
+    if (review?.id && initialReviewData.description) {
+      updateReview.mutate({ reviewId: review.id, ...data });
+    } else {
+      createReview.mutate({ productId, ...data });
+    }
+  };
+
   return (
     <Form {...form}>
       <form
         className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit((data) => console.log(data))}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <p className="font-medium">
           {isPreview ? "Your Review" : "Liked it? Leave a Review!"}
@@ -69,6 +117,7 @@ const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
                   disabled={isPreview}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -84,6 +133,7 @@ const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -102,7 +152,7 @@ const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
         <Button
           variant="ghost"
           size={"lg"}
-          className="w-fit"
+          className="w-fit mt-4"
           type="button"
           onClick={() => setIsPreview(false)}
         >
