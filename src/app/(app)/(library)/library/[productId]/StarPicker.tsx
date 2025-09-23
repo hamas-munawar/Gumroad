@@ -32,8 +32,8 @@ const StarPicker = ({
           type="button"
           onClick={() => !disabled && onChange && onChange(star)}
           className={cn(
-            "p-0.5 hover:scale-110 transition",
-            !disabled && "cursor-pointer"
+            "p-0.5 transition",
+            !disabled && "cursor-pointer hover:scale-110"
           )}
           disabled={disabled}
           onMouseEnter={() => !disabled && setHoverValue(star)}
