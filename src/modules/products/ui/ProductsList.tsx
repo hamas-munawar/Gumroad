@@ -31,7 +31,7 @@ const ProductsList = () => {
       PaginatedDocs<
         Product & { image: { url: string } } & {
           tenant: Tenant & { image: { url: string } };
-        }
+        } & { averageRating: number; reviewsCount: number }
       >
     >(
       {

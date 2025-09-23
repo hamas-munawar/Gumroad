@@ -18,10 +18,48 @@ export const productsRouter = createTRPCRouter({
         depth: 2,
       });
 
+      const reviews = await ctx.payload.find({
+        collection: "reviews",
+        pagination: false,
+        depth: 0,
+        where: {
+          product: { equals: input.productId },
+        },
+      });
+
+      const averageRating =
+        reviews.totalDocs > 0
+          ? Math.round(
+              reviews.docs.reduce((acc, review) => acc + review.rating, 0) /
+                reviews.totalDocs
+            )
+          : 0;
+      const reviewCount = reviews.totalDocs;
+
+      const reviewDistribution: Record<number, number> = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      };
+      reviews.docs.forEach((review) => {
+        if (review.rating >= 1 && review.rating <= 5) {
+          reviewDistribution[review.rating]! += 1;
+        }
+      });
+
       const headers = await getHeaders();
       const session = await ctx.payload.auth({ headers });
 
-      if (!session.user) return { ...product, isPurchased: false };
+      if (!session.user)
+        return {
+          ...product,
+          isPurchased: false,
+          averageRating,
+          reviewCount,
+          reviewDistribution,
+        };
 
       const orders = await ctx.payload.find({
         collection: "orders",
@@ -38,7 +76,13 @@ export const productsRouter = createTRPCRouter({
 
       const isPurchased = orders.totalDocs > 0;
 
-      return { ...product, isPurchased };
+      return {
+        ...product,
+        isPurchased,
+        averageRating,
+        reviewCount,
+        reviewDistribution,
+      };
     }),
   getMany: baseProcedure
     .input(
@@ -93,10 +137,44 @@ export const productsRouter = createTRPCRouter({
         limit: input.limit,
       });
 
+      const productIds = data.docs.map((product) => product.id);
+
+      const reviews = await ctx.payload.find({
+        collection: "reviews",
+        pagination: false,
+        depth: 0,
+        where: {
+          product: { in: productIds },
+        },
+      });
+
+      const reviewsByProductId: Record<string, typeof reviews.docs> = {};
+      reviews.docs.forEach((review) => {
+        const prodId =
+          typeof review.product === "string"
+            ? review.product
+            : review.product.id;
+        if (!reviewsByProductId[prodId]) reviewsByProductId[prodId] = [review];
+        else reviewsByProductId[prodId].push(review);
+      });
+
+      const keys = Object.keys(reviewsByProductId);
+
       return {
         ...data,
         docs: data.docs.map((product) => ({
           ...product,
+          averageRating: keys.includes(product.id)
+            ? Math.round(
+                reviewsByProductId[product.id]!.reduce(
+                  (acc, review) => acc + review.rating,
+                  0
+                ) / reviewsByProductId[product.id]!.length
+              )
+            : 0,
+          reviewsCount: keys.includes(product.id)
+            ? reviewsByProductId[product.id]?.length
+            : 0,
           tenant: product.tenant as Tenant,
         })),
       };
