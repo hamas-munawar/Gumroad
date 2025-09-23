@@ -19,6 +19,12 @@ const page = async ({ params }: Props) => {
     })
   );
 
+  await queryClient.prefetchQuery(
+    trpc.reviews.getOne.queryOptions({
+      productId,
+    })
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />

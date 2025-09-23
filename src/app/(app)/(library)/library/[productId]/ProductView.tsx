@@ -2,6 +2,8 @@
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import ReviewSidebar from "./ReviewSidebar";
+
 interface Props {
   productId: string;
 }
@@ -21,7 +23,7 @@ const ProductView = ({ productId }: Props) => {
       <section className="px-4 lg:px-20 py-4 grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-16">
         <div className="lg:col-span-2">
           <div className="p-4 bg-white rounded-md border gap-4">
-            TODO: Review Sidebar
+            <ReviewSidebar productId={productId} />
           </div>
         </div>
         <div className="lg:col-span-5">
