@@ -244,6 +244,10 @@ export interface Product {
   category?: (string | null) | Category;
   tags?: (string | Tag)[] | null;
   refundPolicy: 'no-refunds' | '30-days' | '60-days';
+  /**
+   * Protected content, only accessible after purchase. Add product documentation, downloadable files, getting started guides, and bonus materials here. Support Markdown formatting.
+   */
+  content?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -267,6 +271,9 @@ export interface Order {
   name: string;
   user: string | User;
   product: string | Product;
+  /**
+   * The Stripe Checkout Session ID associated with this order.
+   */
   stripeCheckoutSessionId: string;
   updatedAt: string;
   createdAt: string;
@@ -439,6 +446,7 @@ export interface ProductsSelect<T extends boolean = true> {
   category?: T;
   tags?: T;
   refundPolicy?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
