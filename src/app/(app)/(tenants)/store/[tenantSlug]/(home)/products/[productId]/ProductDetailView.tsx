@@ -1,18 +1,18 @@
 "use client";
-import { LinkIcon, StarIcon } from "lucide-react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import Link from "next/link";
+import { LinkIcon, StarIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import ProductPrice from "@/modules/components/ProductPrice";
-import { Product, Tenant } from "@/payload-types";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import ProductPrice from '@/modules/components/ProductPrice';
+import { Product, Tenant } from '@/payload-types';
+import { useTRPC } from '@/trpc/client';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { CartButtonSkeleton } from "./CartButton";
-import StarRating from "./StarRating";
+import { CartButtonSkeleton } from './CartButton';
+import StarRating from './StarRating';
 
 const CartButton = dynamic(
   () => import("./CartButton").then((mod) => mod.default),
@@ -33,6 +33,10 @@ const ProductDetailView = ({
     trpc.products.getOne.queryOptions<
       Product & { isPurchased: boolean } & { image: { url: string } } & {
         tenant: Tenant & { image: { url: string } };
+      } & { isPurchased: boolean } & {
+        averageRating: number;
+        reviewCount: number;
+        reviewDistribution: Record<number, number>;
       }
     >({
       productId,
@@ -70,11 +74,11 @@ const ProductDetailView = ({
             <h5 className="text-4xl font-medium p-6 border-b">
               {product.name}
             </h5>
-            <div className="flex border-b">
-              <div className="px-6 py-4 flex items-center justify-center border-r">
+            <div className="grid grid-cols-2 md:grid-cols-[auto_auto_auto_1fr] border-b ">
+              <div className="px-6 py-4 flex items-center justify-center border-r border-b md:border-b-0">
                 <ProductPrice amount={product.price} />
               </div>
-              <div className="px-6 py-4 flex items-center justify-center border-r">
+              <div className="px-6 py-4 flex items-center justify-center md:border-r border-b md:border-b-0">
                 <Link
                   href={`/store/${tenantSlug}`}
                   className="flex gap-1 items-center justify-center"
@@ -91,11 +95,13 @@ const ProductDetailView = ({
                   </span>
                 </Link>
               </div>
-              <div className="px-6 py-4 flex items-center justify-center">
-                <div className="hidden lg:flex">
-                  <StarRating rating={4} />
+              <div className="px-6 py-4 flex items-center justify-center col-span-2 md:col-span-1">
+                <div className="flex">
+                  <StarRating
+                    averageRating={product.averageRating}
+                    reviewCount={product.reviewCount}
+                  />
                 </div>
-                <div className="lg:hidden text-base font-medium">4/5</div>
               </div>
             </div>
             <div>
@@ -136,8 +142,12 @@ const ProductDetailView = ({
               <h5>Ratings</h5>
               <div className="flex items-center gap-1">
                 <StarIcon size={20} className={"fill-black inline"} />
-                <span className="text-base font-medium">({5})</span>
-                <span className="text-base font-medium">{5} ratings</span>
+                <span className="text-base font-medium">
+                  ({product.averageRating})
+                </span>
+                <span className="text-base font-medium">
+                  {product.reviewCount} ratings
+                </span>
               </div>
             </div>
             <div className="flex flex-col p-6 pt-2 gap-3">
@@ -147,8 +157,19 @@ const ProductDetailView = ({
                   key={star}
                 >
                   <span className="text-base font-medium">{star} star</span>
-                  <Progress value={star * 20} className="h-[1lh]" />
-                  <span className="text-base font-medium">(5)</span>
+                  <Progress
+                    value={
+                      product.reviewCount > 0
+                        ? ((product.reviewDistribution[star] || 0) /
+                            product.reviewCount) *
+                          100
+                        : 0
+                    }
+                    className="h-[1lh]"
+                  />
+                  <span className="text-base font-medium">
+                    ({product.reviewDistribution[star] || 0})
+                  </span>
                 </div>
               ))}
             </div>

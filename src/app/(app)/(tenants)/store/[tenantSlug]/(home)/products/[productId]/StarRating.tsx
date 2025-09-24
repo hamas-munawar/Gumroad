@@ -1,6 +1,12 @@
-import { StarIcon } from "lucide-react";
+import { StarIcon } from 'lucide-react';
 
-const StarRating = ({ rating }: { rating: number }) => {
+const StarRating = ({
+  reviewCount,
+  averageRating,
+}: {
+  reviewCount: number;
+  averageRating: number;
+}) => {
   return (
     <div className="flex gap-2 items-center">
       <div className="flex gap-1">
@@ -8,11 +14,11 @@ const StarRating = ({ rating }: { rating: number }) => {
           <StarIcon
             key={index}
             size={20}
-            className={`${index - rating < 0 && "fill-black"}`}
+            className={index < averageRating ? "fill-black" : undefined}
           />
         ))}
       </div>
-      <p className="text-lg font-medium">{rating} ratings</p>
+      <p className="text-lg font-medium">{reviewCount} ratings</p>
     </div>
   );
 };

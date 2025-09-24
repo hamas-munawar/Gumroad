@@ -1,4 +1,3 @@
-import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -53,9 +52,6 @@ const ProductCard = ({ product }: Props) => {
             >
               {product.tenant.username}
             </Link>
-          </div>
-          <div className="flex gap-2">
-            <StarIcon className="size-5 fill-black stroke-0" /> 3 (5)
           </div>
         </CardDescription>
       </CardContent>

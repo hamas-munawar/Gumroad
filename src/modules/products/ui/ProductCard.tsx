@@ -1,18 +1,24 @@
-import { StarIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { StarIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import {
-    Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import ProductPrice from '@/modules/components/ProductPrice';
-import { Product, Tenant } from '@/payload-types';
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import ProductPrice from "@/modules/components/ProductPrice";
+import { Product, Tenant } from "@/payload-types";
 
 interface Props {
   product: Product & { image?: { url: string } } & {
     tenant: Tenant & { image?: { url: string } };
-  };
+  } & { averageRating: number; reviewsCount: number };
 }
 
 const ProductCard = ({ product }: Props) => {
@@ -50,8 +56,14 @@ const ProductCard = ({ product }: Props) => {
               {product.tenant.username}
             </Link>
           </div>
-          <div className="flex gap-2">
-            <StarIcon className="size-5 fill-black stroke-0" /> 3 (5)
+          <div
+            className={cn(
+              "flex gap-2",
+              product.averageRating === 0 && "invisible"
+            )}
+          >
+            <StarIcon className="size-5 fill-black stroke-0" />
+            {product.averageRating} ({product.reviewsCount})
           </div>
         </CardDescription>
       </CardContent>
