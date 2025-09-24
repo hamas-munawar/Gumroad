@@ -1,11 +1,11 @@
-import { headers as getHeaders } from "next/headers";
-import { z } from "zod";
+import { headers as getHeaders } from 'next/headers';
+import { z } from 'zod';
 
-import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
-import { Tenant } from "@/payload-types";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
+import { Tenant } from '@/payload-types';
+import { baseProcedure, createTRPCRouter } from '@/trpc/init';
 
-import { sortTypes } from "../searchParams";
+import { sortTypes } from '../searchParams';
 
 import type { Where } from "payload";
 export const productsRouter = createTRPCRouter({
@@ -27,14 +27,20 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
+      const reviewCount = reviews.docs.length;
       const averageRating =
-        reviews.totalDocs > 0
+        reviewCount > 0
           ? Math.round(
-              reviews.docs.reduce((acc, review) => acc + review.rating, 0) /
-                reviews.totalDocs
+              reviews.docs.reduce(
+                (acc, review) =>
+                  acc +
+                  (typeof review.rating === "number"
+                    ? review.rating
+                    : Number(review.rating) || 0),
+                0
+              ) / reviewCount
             )
           : 0;
-      const reviewCount = reviews.totalDocs;
 
       const reviewDistribution: Record<number, number> = {
         1: 0,

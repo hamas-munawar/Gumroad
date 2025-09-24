@@ -1,4 +1,4 @@
-import { StarIcon } from "lucide-react";
+import { StarIcon } from 'lucide-react';
 
 const StarRating = ({
   reviewCount,
@@ -14,7 +14,7 @@ const StarRating = ({
           <StarIcon
             key={index}
             size={20}
-            className={`${index - averageRating < 0 && "fill-black"}`}
+            className={index < averageRating ? "fill-black" : undefined}
           />
         ))}
       </div>

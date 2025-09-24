@@ -1,18 +1,18 @@
 "use client";
-import { LinkIcon, StarIcon } from "lucide-react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import Link from "next/link";
+import { LinkIcon, StarIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import ProductPrice from "@/modules/components/ProductPrice";
-import { Product, Tenant } from "@/payload-types";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import ProductPrice from '@/modules/components/ProductPrice';
+import { Product, Tenant } from '@/payload-types';
+import { useTRPC } from '@/trpc/client';
+import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { CartButtonSkeleton } from "./CartButton";
-import StarRating from "./StarRating";
+import { CartButtonSkeleton } from './CartButton';
+import StarRating from './StarRating';
 
 const CartButton = dynamic(
   () => import("./CartButton").then((mod) => mod.default),
@@ -57,8 +57,6 @@ const ProductDetailView = ({
       ? tenantObj.image.url
       : "/auth-background.png";
   const tenantUsername = tenantObj?.username ?? "Unknown Store";
-
-  console.log(product);
 
   return (
     <div className="py-4">
@@ -161,9 +159,11 @@ const ProductDetailView = ({
                   <span className="text-base font-medium">{star} star</span>
                   <Progress
                     value={
-                      ((product.reviewDistribution[star] || 0) /
-                        product.reviewCount) *
-                      100
+                      product.reviewCount > 0
+                        ? ((product.reviewDistribution[star] || 0) /
+                            product.reviewCount) *
+                          100
+                        : 0
                     }
                     className="h-[1lh]"
                   />
