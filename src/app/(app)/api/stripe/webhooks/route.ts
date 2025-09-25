@@ -6,6 +6,7 @@ import { getPayload } from "payload";
 import { stripe } from "@/lib/stripe";
 import { ExpandedLineItem } from "@/modules/checkout/types";
 import config from "@payload-config";
+import { TRPCError } from "@trpc/server";
 
 export async function POST(request: Request) {
   let event: Stripe.Event;
@@ -29,7 +30,10 @@ export async function POST(request: Request) {
 
   console.log("✅  Success:", event.id);
 
-  const permittedEvents: string[] = ["checkout.session.completed"];
+  const permittedEvents: string[] = [
+    "checkout.session.completed",
+    "account.updated",
+  ];
 
   const payload = await getPayload({ config });
 
@@ -79,9 +83,32 @@ export async function POST(request: Request) {
             });
           }
           break;
+        case "account.updated":
+          data = event.data.object as Stripe.Account;
+
+          const account = await payload.update({
+            collection: "tenants",
+            where: {
+              stripeAccountId: { equals: data.id },
+            },
+            data: {
+              stripeDetailsSubmitted: data.details_submitted,
+            },
+          });
+
+          if (!account)
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Tenant not found",
+            });
+
+          break;
 
         default:
-          throw new Error(`Unhandled event type ${event.type}`);
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Unhandled event type ${event.type}`,
+          });
       }
     } catch (error) {
       console.log(error);
