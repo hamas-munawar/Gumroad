@@ -58,6 +58,9 @@ export async function POST(request: Request) {
             data.id,
             {
               expand: ["line_items.data.price.product"],
+            },
+            {
+              stripeAccount: event.account,
             }
           );
 
@@ -76,6 +79,7 @@ export async function POST(request: Request) {
               collection: "orders",
               data: {
                 stripeCheckoutSessionId: data.id,
+                stripeAccountId: event.account,
                 user: user.id,
                 product: item.price.product.metadata.id,
                 name: item.price.product.metadata.name,

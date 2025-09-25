@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
 import { z } from "zod";
 
+import { PLATFORM_FEE_PERCENTAGE } from "@/constants";
 import { stripe } from "@/lib/stripe";
 import {
   baseProcedure,
@@ -103,7 +104,21 @@ export const checkoutRouter = createTRPCRouter({
         });
       }
 
-      // TODO: Throw error if tenant doesn't have stripe connected
+      if (!tenant.stripeDetailsSubmitted) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tenant has not submitted Stripe details",
+        });
+      }
+
+      const totalAmount = products.docs.reduce(
+        (acc, item) => acc + item.price * 100,
+        0
+      );
+
+      const platformFee = Math.round(
+        totalAmount * (PLATFORM_FEE_PERCENTAGE / 100)
+      );
 
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => ({
@@ -123,15 +138,23 @@ export const checkoutRouter = createTRPCRouter({
           },
         }));
 
-      const checkout = await stripe.checkout.sessions.create({
-        customer_email: ctx.session.user.email,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}/checkout?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}/checkout?cancel=true`,
-        mode: "payment",
-        line_items: lineItems,
-        invoice_creation: { enabled: true },
-        metadata: { userId: ctx.session.user.id } as CheckoutMetadata,
-      });
+      const checkout = await stripe.checkout.sessions.create(
+        {
+          customer_email: ctx.session.user.email,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}/checkout?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.tenantSlug}/checkout?cancel=true`,
+          mode: "payment",
+          line_items: lineItems,
+          invoice_creation: { enabled: true },
+          metadata: { userId: ctx.session.user.id } as CheckoutMetadata,
+          payment_intent_data: {
+            application_fee_amount: platformFee,
+          },
+        },
+        {
+          stripeAccount: tenant.stripeAccountId,
+        }
+      );
 
       if (!checkout.url) {
         throw new TRPCError({
