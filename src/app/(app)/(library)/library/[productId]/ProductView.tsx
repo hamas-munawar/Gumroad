@@ -1,4 +1,5 @@
 "use client";
+import { Product } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -13,7 +14,12 @@ const ProductView = ({ productId }: Props) => {
   const { data: order } = useSuspenseQuery(
     trpc.library.getOne.queryOptions({ productId })
   );
-  const product = order?.docs[0];
+  const { product } =
+    typeof order?.docs[0] === "string"
+      ? ({} as Product & { product: Product })
+      : (order?.docs[0] as { product: Product });
+
+  console.log(product);
 
   return (
     <div>
@@ -27,9 +33,13 @@ const ProductView = ({ productId }: Props) => {
           </div>
         </div>
         <div className="lg:col-span-5">
-          <p className="font-medium italic text-muted-foreground">
-            No Special Content
-          </p>
+          {product.content ? (
+            <p className="font-medium">{product.content}</p>
+          ) : (
+            <p className="font-medium italic text-muted-foreground">
+              No Special Content
+            </p>
+          )}
         </div>
       </section>
     </div>

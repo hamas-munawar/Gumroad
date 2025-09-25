@@ -110,6 +110,9 @@ export const checkoutRouter = createTRPCRouter({
         where: {
           id: { in: input.productIds },
         },
+        select: {
+          content: false, // Exclude protected content
+        },
         depth: 2,
       });
 

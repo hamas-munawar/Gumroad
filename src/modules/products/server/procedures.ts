@@ -1,11 +1,11 @@
-import { headers as getHeaders } from 'next/headers';
-import { z } from 'zod';
+import { headers as getHeaders } from "next/headers";
+import { z } from "zod";
 
-import { DEFAULT_PRODUCTS_LIMIT } from '@/constants';
-import { Tenant } from '@/payload-types';
-import { baseProcedure, createTRPCRouter } from '@/trpc/init';
+import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
+import { Tenant } from "@/payload-types";
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
-import { sortTypes } from '../searchParams';
+import { sortTypes } from "../searchParams";
 
 import type { Where } from "payload";
 export const productsRouter = createTRPCRouter({
@@ -16,6 +16,9 @@ export const productsRouter = createTRPCRouter({
         collection: "products",
         id: input.productId,
         depth: 2,
+        select: {
+          content: false, // Exclude protected content
+        },
       });
 
       const reviews = await ctx.payload.find({
@@ -141,6 +144,9 @@ export const productsRouter = createTRPCRouter({
         sort,
         page: input.cursor,
         limit: input.limit,
+        select: {
+          content: false, // Exclude protected content
+        },
       });
 
       const productIds = data.docs.map((product) => product.id);
