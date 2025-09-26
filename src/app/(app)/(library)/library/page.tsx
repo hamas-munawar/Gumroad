@@ -1,10 +1,12 @@
+import { Suspense } from "react";
+
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import ProductsList from "./ProductsList";
+import ProductsList, { ProductsListSkeleton } from "./ProductsList";
 
 const LibraryPage = async () => {
   const queryClient = getQueryClient();
@@ -25,7 +27,9 @@ const LibraryPage = async () => {
       </header>
       <div className="flex-1 px-4 lg:px-20 py-4">
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <ProductsList />
+          <Suspense fallback={<ProductsListSkeleton />}>
+            <ProductsList />
+          </Suspense>
         </HydrationBoundary>
       </div>
       <Footer />
