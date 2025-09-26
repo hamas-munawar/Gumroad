@@ -1,6 +1,7 @@
 "use client";
 import { Product } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import ReviewSidebar from "./ReviewSidebar";
@@ -34,7 +35,7 @@ const ProductView = ({ productId }: Props) => {
         </div>
         <div className="lg:col-span-5">
           {product.content ? (
-            <p className="font-medium">{product.content}</p>
+            <RichText data={product.content} />
           ) : (
             <p className="font-medium italic text-muted-foreground">
               No Special Content

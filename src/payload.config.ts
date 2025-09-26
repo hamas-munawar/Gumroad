@@ -55,7 +55,7 @@ export default buildConfig({
     payloadCloudPlugin(),
     multiTenantPlugin<Config>({
       collections: {
-        products: {},
+        products: { useBaseFilter: false },
       },
       tenantsArrayField: {
         includeDefaultField: false,

@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import ProductPrice from "@/modules/components/ProductPrice";
 import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { CartButtonSkeleton } from "./CartButton";
@@ -106,9 +107,11 @@ const ProductDetailView = ({
             </div>
             <div>
               <div className="px-6 py-4 flex items-center">
-                <p className="text-base">
-                  {product.description || "No description provided."}
-                </p>
+                {product.description ? (
+                  <RichText data={product.description} />
+                ) : (
+                  <p className="text-base">No description provided.</p>
+                )}
               </div>
             </div>
           </div>
