@@ -4,6 +4,7 @@ import { z } from "zod";
 import { DEFAULT_PRODUCTS_LIMIT } from "@/constants";
 import { Tenant } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 
 import { sortTypes } from "../searchParams";
 
@@ -20,6 +21,13 @@ export const productsRouter = createTRPCRouter({
           content: false, // Exclude protected content
         },
       });
+
+      if (product.archived) {
+        return new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
 
       const reviews = await ctx.payload.find({
         collection: "reviews",

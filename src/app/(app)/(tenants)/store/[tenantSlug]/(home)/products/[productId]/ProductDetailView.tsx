@@ -1,18 +1,18 @@
 "use client";
-import { LinkIcon, StarIcon } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import Link from 'next/link';
+import { LinkIcon, StarIcon } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import ProductPrice from '@/modules/components/ProductPrice';
-import { Product, Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import ProductPrice from "@/modules/components/ProductPrice";
+import { Product, Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { CartButtonSkeleton } from './CartButton';
-import StarRating from './StarRating';
+import { CartButtonSkeleton } from "./CartButton";
+import StarRating from "./StarRating";
 
 const CartButton = dynamic(
   () => import("./CartButton").then((mod) => mod.default),
@@ -181,3 +181,20 @@ const ProductDetailView = ({
 };
 
 export default ProductDetailView;
+
+export const ProductDetailViewSkeleton = () => {
+  return (
+    <div className="py-4">
+      <div className="bg-white border rounded-md overflow-hidden">
+        <div className="relative aspect-[3.9] min-h-48">
+          <Image
+            src={"/placeholder.png"}
+            alt={`Placeholder`}
+            fill
+            className="object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -8,7 +8,9 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-import ProductDetailView from "./ProductDetailView";
+import ProductDetailView, {
+  ProductDetailViewSkeleton,
+} from "./ProductDetailView";
 
 interface ProductPageProps {
   params: Promise<{ productId: string; tenantSlug: string }>;
@@ -32,7 +34,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<ProductDetailViewSkeleton />}>
         <ProductDetailView productId={productId} tenantSlug={tenantSlug} />
       </Suspense>
     </HydrationBoundary>
