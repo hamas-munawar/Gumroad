@@ -254,6 +254,10 @@ export interface Product {
    * Archived products are hidden from the storefront
    */
   archived?: boolean | null;
+  /**
+   * Private products are only accessible on your storefront not on public product pages
+   */
+  private?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -458,6 +462,7 @@ export interface ProductsSelect<T extends boolean = true> {
   refundPolicy?: T;
   content?: T;
   archived?: T;
+  private?: T;
   updatedAt?: T;
   createdAt?: T;
 }

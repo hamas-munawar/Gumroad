@@ -218,6 +218,8 @@ const buildProductQuery = (input: {
   // Tenant filter logic
   if (input.tenantSlug) {
     where["tenant.slug"] = { equals: input.tenantSlug };
+  } else {
+    where["private"] = { not_equals: true };
   }
 
   // Price filter logic

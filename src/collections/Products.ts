@@ -87,10 +87,21 @@ export const Products: CollectionConfig = {
     },
     {
       name: "archived",
+      label: "Archived",
       type: "checkbox",
       defaultValue: false,
       admin: {
         description: "Archived products are hidden from the storefront",
+      },
+    },
+    {
+      name: "private",
+      label: "Private",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description:
+          "Private products are only accessible on your storefront not on public product pages",
       },
     },
   ],
