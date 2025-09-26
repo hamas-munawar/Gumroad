@@ -204,6 +204,9 @@ const buildProductQuery = (input: {
 }): { where: Where; sort: string } => {
   const where: Where = {};
 
+  // Archived filter logic
+  where.archived = { not_equals: true };
+
   // Tenant filter logic
   if (input.tenantSlug) {
     where["tenant.slug"] = { equals: input.tenantSlug };

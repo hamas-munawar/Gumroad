@@ -13,6 +13,7 @@ export const Products: CollectionConfig = {
       const tenant = req.user?.tenants?.[0]?.tenant as Tenant;
       return Boolean(tenant?.stripeDetailsSubmitted);
     },
+    delete: ({ req }) => isSuperAdmin(req.user),
   },
   admin: {
     useAsTitle: "name",
@@ -82,6 +83,14 @@ export const Products: CollectionConfig = {
       admin: {
         description:
           "Protected content, only accessible after purchase. Add product documentation, downloadable files, getting started guides, and bonus materials here. Support Markdown formatting.",
+      },
+    },
+    {
+      name: "archived",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description: "Archived products are hidden from the storefront",
       },
     },
   ],
