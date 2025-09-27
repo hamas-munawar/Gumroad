@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { generateTenantSubdomain } from "@/lib/utils";
 import ProductPrice from "@/modules/components/ProductPrice";
 import { Product, Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
@@ -81,7 +82,7 @@ const ProductDetailView = ({
               </div>
               <div className="px-6 py-4 flex items-center justify-center md:border-r border-b md:border-b-0">
                 <Link
-                  href={`/store/${tenantSlug}`}
+                  href={generateTenantSubdomain(tenantSlug)}
                   className="flex gap-1 items-center justify-center"
                 >
                   <Image
@@ -128,7 +129,7 @@ const ProductDetailView = ({
                   aria-label="Copy product link"
                   title="Copy product link"
                   onClick={() => {
-                    const url = `${window.location.origin}/store/${tenantSlug}/products/${productId}`;
+                    const url = `${window.location.origin}${generateTenantSubdomain(tenantSlug)}/products/${productId}`;
                     navigator.clipboard?.writeText?.(url)?.catch(() => {});
                   }}
                 >

@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, generateTenantSubdomain } from "@/lib/utils";
 import ProductPrice from "@/modules/components/ProductPrice";
 import { Product, Tenant } from "@/payload-types";
 
@@ -35,7 +35,9 @@ const ProductCard = ({ product }: Props) => {
         </div>
       </CardHeader>
       <CardContent className="border-b p-4 text-black flex flex-col gap-2">
-        <Link href={`/store/${product.tenant.slug}/products/${product.id}`}>
+        <Link
+          href={`${generateTenantSubdomain(product.tenant.slug)}/products/${product.id}`}
+        >
           <CardTitle className="text-2xl font-medium">{product.name}</CardTitle>
         </Link>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
@@ -50,7 +52,7 @@ const ProductCard = ({ product }: Props) => {
               />
             )}
             <Link
-              href={"/store/" + product.tenant.slug}
+              href={generateTenantSubdomain(product.tenant.slug)}
               className="underline text-lg"
             >
               {product.tenant.username}

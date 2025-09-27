@@ -14,7 +14,7 @@ const Footer = () => {
       <div className="flex gap-1 justify-center items-end">
         <p>Powered by</p>
         <Link
-          href={`/`}
+          href={process.env.NEXT_PUBLIC_APP_URL!}
           className={cn(
             "pl-2 text-4xl xl:text-5xl font-semibold",
             popins.className
