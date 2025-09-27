@@ -8,6 +8,8 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import ProductsList, { ProductsListSkeleton } from "./ProductsList";
 
+export const dynamic = "force-dynamic";
+
 const LibraryPage = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery(
