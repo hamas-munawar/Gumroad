@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantSubdomain(tenantSlug: string) {
-  if (process.env.NODE_ENV === "development") {
+  if (
+    process.env.NODE_ENV === "development" ||
+    process.env.DOMAIN_REWRITE === "false"
+  ) {
     return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
   }
 
