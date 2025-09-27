@@ -1,9 +1,11 @@
+import { Suspense } from "react";
+
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import ProductView from "./ProductView";
+import ProductView, { ProductViewSkeleton } from "./ProductView";
 
 interface Props {
   params: Promise<{ productId: string }>;
@@ -30,7 +32,9 @@ const page = async ({ params }: Props) => {
       <Navbar />
       <div className="flex-1">
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <ProductView productId={productId} />
+          <Suspense fallback={<ProductViewSkeleton />}>
+            <ProductView productId={productId} />
+          </Suspense>
         </HydrationBoundary>
       </div>
       <Footer />

@@ -164,3 +164,14 @@ const ReviewSidebar = ({ productId }: ReviewSidebarProps) => {
 };
 
 export default ReviewSidebar;
+
+export const ReviewSidebarSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="h-6 w-1/2 bg-muted rounded animate-pulse" />
+      <div className="h-10 w-full bg-muted rounded animate-pulse" />
+      <div className="h-24 w-full bg-muted rounded animate-pulse" />
+      <div className="h-10 w-1/3 bg-muted rounded animate-pulse" />
+    </div>
+  );
+};

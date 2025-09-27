@@ -1,18 +1,19 @@
 "use client";
-import { LinkIcon, StarIcon } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import Link from 'next/link';
+import { LinkIcon, StarIcon } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import ProductPrice from '@/modules/components/ProductPrice';
-import { Product, Tenant } from '@/payload-types';
-import { useTRPC } from '@/trpc/client';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import ProductPrice from "@/modules/components/ProductPrice";
+import { Product, Tenant } from "@/payload-types";
+import { useTRPC } from "@/trpc/client";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { CartButtonSkeleton } from './CartButton';
-import StarRating from './StarRating';
+import { CartButtonSkeleton } from "./CartButton";
+import StarRating from "./StarRating";
 
 const CartButton = dynamic(
   () => import("./CartButton").then((mod) => mod.default),
@@ -106,9 +107,11 @@ const ProductDetailView = ({
             </div>
             <div>
               <div className="px-6 py-4 flex items-center">
-                <p className="text-base">
-                  {product.description || "No description provided."}
-                </p>
+                {product.description ? (
+                  <RichText data={product.description} />
+                ) : (
+                  <p className="text-base">No description provided.</p>
+                )}
               </div>
             </div>
           </div>
@@ -181,3 +184,20 @@ const ProductDetailView = ({
 };
 
 export default ProductDetailView;
+
+export const ProductDetailViewSkeleton = () => {
+  return (
+    <div className="py-4">
+      <div className="bg-white border rounded-md overflow-hidden">
+        <div className="relative aspect-[3.9] min-h-48">
+          <Image
+            src={"/placeholder.png"}
+            alt={`Placeholder`}
+            fill
+            className="object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -71,6 +71,7 @@ export const checkoutRouter = createTRPCRouter({
           and: [
             { id: { in: input.productIds } },
             { "tenant.slug": { equals: input.tenantSlug } },
+            { archived: { not_equals: true } },
           ],
         },
         depth: 2,
@@ -175,7 +176,10 @@ export const checkoutRouter = createTRPCRouter({
       const products = await ctx.payload.find({
         collection: "products",
         where: {
-          id: { in: input.productIds },
+          and: [
+            { id: { in: input.productIds } },
+            { archived: { not_equals: true } },
+          ],
         },
         select: {
           content: false, // Exclude protected content
