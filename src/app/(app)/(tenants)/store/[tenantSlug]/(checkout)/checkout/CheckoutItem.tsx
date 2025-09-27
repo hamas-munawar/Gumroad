@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, generateTenantSubdomain } from "@/lib/utils";
 import { useCart } from "@/modules/checkout/hooks/useCart";
 import { Product, Tenant } from "@/payload-types";
 
@@ -32,12 +32,15 @@ const CheckoutItem = ({ product, isLast, tenantSlug }: CheckoutItemProps) => {
       </div>
       <div className="py-4 flex flex-col items-start gap-2">
         <Link
-          href={`/store/${tenantSlug}/products/${product.id}`}
+          href={`${generateTenantSubdomain(tenantSlug)}/products/${product.id}`}
           className="text-lg font-medium underline"
         >
           {product.name}
         </Link>
-        <Link href={`/store/${tenantSlug}`} className="underline text-base">
+        <Link
+          href={`${generateTenantSubdomain(tenantSlug)}`}
+          className="underline text-base"
+        >
           <div className="flex items-center gap-2">
             <Image
               src={product.tenant.image?.url || "/placeholder.png"}

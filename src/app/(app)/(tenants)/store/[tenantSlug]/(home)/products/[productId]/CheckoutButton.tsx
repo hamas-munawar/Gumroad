@@ -1,9 +1,9 @@
-import { ShoppingCartIcon } from 'lucide-react';
-import Link from 'next/link';
+import { ShoppingCartIcon } from "lucide-react";
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useCart } from '@/modules/checkout/hooks/useCart';
+import { Button } from "@/components/ui/button";
+import { cn, generateTenantSubdomain } from "@/lib/utils";
+import { useCart } from "@/modules/checkout/hooks/useCart";
 
 interface CheckoutButtonProps {
   tenantSlug: string;
@@ -25,7 +25,7 @@ const CheckoutButton = ({
   return (
     <Button variant={"elevated"} asChild className="px-4 py-1 bg-white">
       <Link
-        href={`/store/${tenantSlug}/checkout`}
+        href={`${generateTenantSubdomain(tenantSlug)}/checkout`}
         className={cn(
           "flex items-center justify-center font-medium",
           className

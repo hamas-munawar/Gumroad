@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, generateTenantSubdomain } from "@/lib/utils";
 import { Tenant } from "@/payload-types";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -48,7 +48,7 @@ const Navbar = ({ tenantSlug }: NavbarProps) => {
           />
         )}
         <Link
-          href={`/store/${tenantSlug}`}
+          href={generateTenantSubdomain(tenantSlug)}
           className={cn(
             "pl-2 text-4xl xl:text-5xl font-semibold",
             popins.className

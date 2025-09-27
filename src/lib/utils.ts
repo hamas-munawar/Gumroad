@@ -5,6 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function generateTenantSubdomain(tenantSlug: string) {
+  if (process.env.NODE_ENV === "development") {
+    return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
+  }
+
+  const protocol = "https";
+  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "";
+
+  // if (process.env.NODE_ENV === "development") {
+  //   protocol = "http";
+  // }
+
+  return `${protocol}://${tenantSlug}.${domain}`;
+}
+
 export function formatCurrency(amount: string | number, currency: string) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

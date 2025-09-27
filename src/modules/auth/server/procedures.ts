@@ -104,7 +104,9 @@ export const authRouter = createTRPCRouter({
         value: user.token,
         httpOnly: true,
         path: "/",
-        // TODO: Ensure cross-domain cookie sharing
+        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
       });
 
       return user;
@@ -132,7 +134,9 @@ export const authRouter = createTRPCRouter({
       value: user.token,
       httpOnly: true,
       path: "/",
-      // TODO: Ensure cross-domain cookie sharing
+      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+      domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
     });
 
     return user;

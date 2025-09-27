@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { generateTenantSubdomain } from "@/lib/utils";
 
 interface NavbarProps {
   tenantSlug: string;
@@ -13,7 +14,7 @@ const Navbar = ({ tenantSlug }: NavbarProps) => {
         <p className="text-2xl font-medium">Checkout</p>
       </div>
       <Button variant="elevated" size="sm" asChild>
-        <Link href={`/store/${tenantSlug}`}>Back to store</Link>
+        <Link href={generateTenantSubdomain(tenantSlug)}>Back to store</Link>
       </Button>
     </nav>
   );

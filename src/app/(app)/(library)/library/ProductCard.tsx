@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { generateTenantSubdomain } from "@/lib/utils";
 import { Product, Tenant } from "@/payload-types";
 
 interface Props {
@@ -47,7 +48,7 @@ const ProductCard = ({ product }: Props) => {
               />
             )}
             <Link
-              href={"/store/" + product.tenant.slug}
+              href={generateTenantSubdomain(product.tenant.slug)}
               className="underline text-lg"
             >
               {product.tenant.username}
