@@ -6,10 +6,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantSubdomain(tenantSlug: string) {
-  if (
-    process.env.NODE_ENV === "development" ||
-    process.env.DOMAIN_REWRITE === "false"
-  ) {
+  const isDevelopmentMode = process.env.NODE_ENV === "development";
+  const isDomainRewriteFalse = process.env.DOMAIN_REWRITE === "false";
+
+  // If in development or domain rewrite is explicitly set to false, use the main app URL with /store/tenantSlug
+  if (isDevelopmentMode || isDomainRewriteFalse) {
     return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
   }
 
