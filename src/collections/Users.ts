@@ -35,7 +35,15 @@ export const Users: CollectionConfig = {
     useAsTitle: "email",
     hidden: ({ user }) => !isSuperAdmin(user),
   },
-  auth: true,
+  auth: {
+    cookies: {
+      ...(process.env.NODE_ENV !== "development" && {
+        sameSite: "None",
+        secure: true,
+        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+      }),
+    },
+  },
   fields: [
     // Email added by default
     // Add more fields as needed
