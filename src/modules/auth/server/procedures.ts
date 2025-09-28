@@ -104,9 +104,11 @@ export const authRouter = createTRPCRouter({
         value: user.token,
         httpOnly: true,
         path: "/",
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+        ...(process.env.NODE_ENV !== "development" && {
+          sameSite: "none",
+          secure: true,
+          domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+        }),
       });
 
       return user;
@@ -134,9 +136,11 @@ export const authRouter = createTRPCRouter({
       value: user.token,
       httpOnly: true,
       path: "/",
-      sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
-      domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+      ...(process.env.NODE_ENV !== "development" && {
+        sameSite: "none",
+        secure: true,
+        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+      }),
     });
 
     return user;

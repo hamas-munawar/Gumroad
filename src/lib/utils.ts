@@ -6,22 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function generateTenantSubdomain(tenantSlug: string) {
-  // const isDevelopmentMode = process.env.NODE_ENV === "development";
-  // const isDomainRewriteFalse = process.env.DOMAIN_REWRITE === "false";
+  const isProduction = process.env.NODE_ENV === "production";
+  const isDomainRewriteFalse = process.env.DOMAIN_REWRITE === "false";
+  if (!isProduction || isDomainRewriteFalse) {
+    return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
+  }
 
-  // // If in development or domain rewrite is explicitly set to false, use the main app URL with /store/tenantSlug
-  // if (isDevelopmentMode || isDomainRewriteFalse) {
-  return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
-  // }
-
-  // const protocol = "https";
-  // const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "";
-
-  // // if (process.env.NODE_ENV === "development") {
-  // //   protocol = "http";
-  // // }
-
-  // return `${protocol}://${tenantSlug}.${domain}`;
+  const protocol = "https";
+  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "";
+  return `${protocol}://${tenantSlug}.${domain}`;
 }
 
 export function formatCurrency(amount: string | number, currency: string) {
