@@ -25,7 +25,7 @@ const ProductCard = ({ product }: Props) => {
       <CardHeader className="p-0">
         <div className="relative aspect-square border-b w-full ">
           <Image
-            src={product.image?.url || "/placeholder.png"}
+            src={product?.image?.url || "/placeholder.png"}
             fill
             className="object-cover"
             alt={"Product Image"}
@@ -38,9 +38,9 @@ const ProductCard = ({ product }: Props) => {
         </Link>
         <CardDescription className="flex flex-col gap-2 text-black text-base">
           <div className="flex items-center gap-2">
-            {product.tenant.image?.url && (
+            {product?.tenant?.image?.url && (
               <Image
-                src={product.tenant.image?.url}
+                src={product.tenant.image.url}
                 alt="Author"
                 width={16}
                 height={16}

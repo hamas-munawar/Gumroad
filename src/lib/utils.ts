@@ -8,13 +8,13 @@ export function cn(...inputs: ClassValue[]) {
 export function generateTenantSubdomain(tenantSlug: string) {
   const isProduction = process.env.NODE_ENV === "production";
   const isDomainRewriteFalse = process.env.DOMAIN_REWRITE === "false";
-  if (!isProduction || isDomainRewriteFalse) {
-    return `${process.env.NEXT_PUBLIC_APP_URL}/store/${tenantSlug}`;
-  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
 
-  const protocol = "https";
-  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "";
-  return `${protocol}://${tenantSlug}.${domain}`;
+  if (!isProduction || isDomainRewriteFalse || !rootDomain)
+    return `${appUrl}/store/${tenantSlug}`;
+
+  return `https://${tenantSlug}.${rootDomain}`;
 }
 
 export function formatCurrency(amount: string | number, currency: string) {
