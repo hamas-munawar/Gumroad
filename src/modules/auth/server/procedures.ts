@@ -17,7 +17,26 @@ export const authRouter = createTRPCRouter({
   }),
   logout: baseProcedure.mutation(async () => {
     const cookies = await getCookies();
-    cookies.delete(AUTH_TOKEN);
+
+    // Check for the production-like environment flag
+    const isNotDevelopment = process.env.NODE_ENV !== "development";
+
+    // Define the options for deletion.
+    // They MUST match the options used during the set operation.
+    const options = {
+      path: "/",
+      ...(isNotDevelopment && {
+        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+        secure: true,
+        sameSite: "none" as const,
+      }),
+    };
+
+    // 💥 The Fix: Use the single object syntax for deletion.
+    cookies.delete({
+      name: AUTH_TOKEN,
+      ...options,
+    });
   }),
   register: baseProcedure
     .input(registerSchema)
